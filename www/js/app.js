@@ -183,16 +183,7 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
             else if($stateParams.tt=='setComment') return 'SetCommentCtrl';
             else return 'HealthCoachInfoCtrl';
           }      
-  })
-    .state('tab.others', {
-        url: '/others',
-        views: {
-          'tab-others': {
-            templateUrl: 'partials/tabs/tab-others.html',
-            controller: 'OthersCtrl'
-          }
-        }
-    });
+  });
 
 //目录
  $stateProvider
@@ -220,7 +211,7 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
 })
 // --------不同平台的相关设置----------------
 .config(function($ionicConfigProvider) {
-  $ionicConfigProvider.views.maxCache(5);
+  $ionicConfigProvider.views.maxCache(0);
   // note that you can also chain configs
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.tabs.style('standard');
