@@ -10,7 +10,7 @@
             <ion-item href="{{task.go}}" ng-repeat="task in taskdetaillist | orderBy : 'Status'" ng-if=(task.Code!="TF0002") class="item item-thumbnail-left item-icon-right" ng-click="{{task.click}}('{{task.Code}}')">
                 <img ng-src="img/icon/TF0000.png">
                 <h2>{{task.Name}}<span ng-if=(task.Code=="TF0001")>、脉搏</span></h2>
-                <h2>{{task.js}}</h2>
+                <br/><h2><a style='text-decoration:none;' ng-click="showmore('{{task.Instruction}}')">{{task.Instruction}}</a></h2>
                 <i class="icon">
                     <span class="" ng-if=(task.Status==1)>
                         已完成
