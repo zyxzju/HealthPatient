@@ -10,7 +10,10 @@
 				<input type="number" ng-model='BMI.weight'>
 			</label>
 			<label class="item item-input" ng-if=BMI.BMI>
-				BMI = 体重/(身高*身高)={{BMI.BMI.toFixed(4)}}
+				<span>
+					BMI = {{(BMI.BMI*10000).toFixed(2)}}<br/>
+					{{BMI.result}}
+				</span>
 			</label>
 		</div>
 		<div class="button-bar padding">
