@@ -553,8 +553,8 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 //任务详细
 .controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage',
 function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage) {
-  var data={"ParentCode":$stateParams.tl,"PlanNo":'PLAN20151029',"Date":"NOW","PatientId":Storage.get("UID")};//
-  var detail={"ParentCode":'',"PlanNo":'PLAN20151029',"Date":"NOW","PatientId":Storage.get("UID")};//extraInfo.PlanNo().PlanNo
+  var data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//
+  var detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//extraInfo.PlanNo().PlanNo
 
   ////////////////////////////////////
   $ionicModal.fromTemplateUrl('helist.html', {
@@ -635,7 +635,7 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
 //任务列表
 .controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage',function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage) {
   //extraInfo.PlanNo().PlanNo'PLAN20151029'
-  var data={"ParentCode":"T","PlanNo":'PLAN20151029',"Date":"NOW","PatientId":Storage.get("UID")};
+  var data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
   ionic.DomUtil.ready(function(){
     get();
   });
@@ -1014,8 +1014,8 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
   };
 }])
 
-.controller('measureweightcontroller',['$scope','Data','Storage','VitalInfo', 'extraInfo',
-  function($scope,Data,Storage,VitalInfo,extraInfo){
+.controller('measureweightcontroller',['$scope','Data','Storage','VitalInfo', 'extraInfo','$ionicLoading',
+  function($scope,Data,Storage,VitalInfo,extraInfo,$ionicLoading){
   $scope.$on('$viewContentLoading', 
   function(event){
     console.log('viewContentLoading');
@@ -1029,7 +1029,7 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     });
   });
   $scope.BMI={}
-  var UserId ='PID201506180013'// Storage.get("UID");
+  var UserId =Storage.get("UID");//'PID201506180013'
   var get = [{
     UserId:UserId,
     ItemType:"Weight",
@@ -1051,6 +1051,11 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
   $scope.test = function()
   {
     $scope.BMI.BMI=($scope.BMI.weight/($scope.BMI.height * $scope.BMI.height));
+    if($scope.BMI.BMI<0.00185)$scope.BMI.result = "您的体重有点过轻了";
+    else if($scope.BMI.BMI>=0.00185&&$scope.BMI.BMI<0.002499)$scope.BMI.result = "您的体重属于正常范围";
+    else if($scope.BMI.BMI>=0.0025&&$scope.BMI.BMI<0.0028)$scope.BMI.result = "您的体重过重了";
+    else if($scope.BMI.BMI>=0.0028&&$scope.BMI.BMI<0.0032)$scope.BMI.result = "您已经属于肥胖行列了";
+    else if($scope.BMI.BMI>=0.0032)$scope.BMI.result = "您现在已经非常肥胖了";
     console.log($scope.BMI.BMI);
   };
   $scope.saveWH = function()
@@ -1085,7 +1090,12 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
       console.log(s);
       VitalInfo.PostPatientVitalSigns(save[1]).then(function(s){
         console.log(s);
-        alert("保存成功");
+        $ionicLoading.show({
+          template: '保存成功',
+          noBackdrop: true,
+          duration: 700
+        });
+        // alert("保存成功");
       })
     })
   }
