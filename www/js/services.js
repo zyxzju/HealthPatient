@@ -2,7 +2,7 @@ angular.module('zjubme.services', ['ionic','ngResource'])
 
 // 客户端配置
 .constant('CONFIG', {
-  baseUrl: 'http://10.12.43.72:9000/Api/v1/',
+  baseUrl: 'http://121.43.107.106:9000/Api/v1/',
   wsServerIP : "ws://" + "10.12.43.61" + ":4141",
   role: "Patient",
   //revUserId: "",
@@ -112,7 +112,7 @@ angular.module('zjubme.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route', {path:'MessageInfo'},
               {
                 submitSMS: {method:'POST', params:{route: 'message'},timeout: 10000},
-                GetSMSDialoguePL:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000}
+                GetSMSDialogue:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000}
         
         });
     };

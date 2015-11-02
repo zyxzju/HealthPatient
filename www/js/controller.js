@@ -79,10 +79,24 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 }])
 
 //注册 
-.controller('userdetailCtrl',['$scope','$state','$cordovaDatePicker','$rootScope','$timeout' ,'userservice','Storage','loading' ,function($scope,$state,$cordovaDatePicker,$rootScope,$timeout,userservice,Storage,loading){
+.controller('userdetailCtrl',['$scope','$state','$cordovaDatePicker','$rootScope','$timeout' ,'userservice','Storage','loading','Users','Data' ,function($scope,$state,$cordovaDatePicker,$rootScope,$timeout,userservice,Storage,loading,Users,Data){
   $scope.barwidth="width:0%";
   $scope.userName='';
   $scope.birthday="点击设置";
+  var upload={
+    "UserId": "",
+    "UserName": "",
+    "Birthday": "",
+    "Gender": "",
+    "IDNo": "sample string 5",
+    "DoctorId":"",
+    "InsuranceType":"",
+    "InvalidFlag": 0,
+    "piUserId": "sample string 7",
+    "piTerminalName": "sample string 8",
+    "piTerminalIP": "sample string 9",
+    "piDeviceType": 2
+  }
   var datePickerCallback = function (val) {
     if (typeof(val) === 'undefined') {
       console.log('No date selected');
@@ -91,7 +105,10 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
       var dd=val.getDate();
       var mm=val.getMonth()+1;
       var yyyy=val.getFullYear();
-      var birthday=yyyy+'/'+mm+'/'+dd;
+      var d=dd<10?('0'+String(dd)):String(dd);
+      var m=mm<10?('0'+String(mm)):String(mm);
+      upload.Birthday=parseInt(yyyy+m+d);
+      var birthday=yyyy+'/'+m+'/'+d;
       $scope.birthday=birthday;
     }
   };
@@ -122,41 +139,62 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
   };  
   $scope.infoSetup = function(userName,userGender){
     if(userName!='' && userGender!='' && $scope.birthday!='' && $scope.birthday!='点击设置'){
-      // var activition = function(){
-      //   var UIDpromise=userservice.UID('PhoneNo',$rootScope.userId);
-      //   UIDpromise.then(function(data){
-      //     var uid=data.result;
-      //     if(uid!=null){
-      //       userservice.Activition(uid,)
-      //     }
-      //   },function(data){
-      //   });
-      // }
-      $rootScope.NAME=userName;
-      $rootScope.GENDER=userGender;
-      $rootScope.BIRTHDAY=$scope.birthday;
+      upload.UserName=userName;
+      upload.Gender=userGender == '男'?1:2;
+      var saveUID = function(){
+        UIDpromise=userservice.UID('PhoneNo',$rootScope.userId)
+        .then(function(data){
+          if(data.result!=null){
+            Storage.set('UID', data.result);
+            upload.UserId=Storage.get('UID');
+
+            // Users.myTrial(upload).then(function(data){
+            //   $scope.logStatus=data.result;
+            //   if(data.result=="数据插入成功"){
+            //     $scope.logStatus='注册成功！';
+            //     $timeout(function(){$state.go('upload');} , 500);
+            //   }
+            // });  
+            
+            Data.Users.SetPatBasicInfo( upload, function (success, headers) {
+               $scope.logStatus=success.result;
+              if(success.result=="数据插入成功"){
+                $scope.logStatus='注册成功！';
+                $timeout(function(){$state.go('tab.tasklist');} , 500);
+              }
+            });
+
+
+          }
+        },function(data){
+        });
+      }
+      // $rootScope.NAME=userName;
+      // $rootScope.GENDER=userGender;
+      // $rootScope.BIRTHDAY=$scope.birthday;
       loading.loadingBarStart($scope);
-      var promise=userservice.userRegister("PhoneNo",$rootScope.userId, userName, $rootScope.password,"Patient");
-      promise.then(function(data){
+      userservice.userRegister("PhoneNo",$rootScope.userId, userName, $rootScope.password,"Patient")
+      .then(function(data){
         loading.loadingBarFinish($scope);
-        $scope.logStatus=data.result;
-        if(data.result=="注册成功"){
-          $timeout(function(){$state.go('tab.tasklist');} , 500);
-        }
-        //activition();//帐号激活用
+        console.log($rootScope.userId,$rootScope.password);
+        userservice.userLogOn('PhoneNo' ,$rootScope.userId,$rootScope.password,'Patient').then(function(data){
+          if(data.result.substr(0,4)=="登陆成功"){
+            Storage.set('TOKEN', data.result.substr(12));
+          }
+        });
+        Storage.set('USERNAME', $rootScope.userId);
+        saveUID();
       },function(data){
         loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
           $scope.logStatus='连接超时！';
           return;          
-        }
-        console.log(data);      
+        }     
         $scope.logStatus=data.data.result;
       });
     }else{
       $scope.logStatus='请输入完整信息！';
     }
-
   }
 }])
 
@@ -477,8 +515,8 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
         NotificationService.remove(index);
         $scope.alertlist = NotificationService.get();
       }
-  /////////////////////////
-  //退出账号
+       /////////////////////////
+      //退出账号
 
        $scope.signoutConfirm = function(a){
         if(a=="logout"){
@@ -515,8 +553,8 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 //任务详细
 .controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage',
 function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage) {
-  var data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
-  var detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
+  var data={"ParentCode":$stateParams.tl,"PlanNo":'PLAN20151029',"Date":"NOW","PatientId":Storage.get("UID")};//
+  var detail={"ParentCode":'',"PlanNo":'PLAN20151029',"Date":"NOW","PatientId":Storage.get("UID")};//extraInfo.PlanNo().PlanNo
 
   ////////////////////////////////////
   $ionicModal.fromTemplateUrl('helist.html', {
@@ -596,8 +634,8 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
 
 //任务列表
 .controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage',function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage) {
-  
-  var data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
+  //extraInfo.PlanNo().PlanNo'PLAN20151029'
+  var data={"ParentCode":"T","PlanNo":'PLAN20151029',"Date":"NOW","PatientId":Storage.get("UID")};
   ionic.DomUtil.ready(function(){
     get();
   });
@@ -976,8 +1014,8 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
   };
 }])
 
-.controller('measureweightcontroller',['$scope','Data','Storage','VitalInfo', 'extraInfo',
-  function($scope,Data,Storage,VitalInfo,extraInfo){
+.controller('measureweightcontroller',['$scope','Data','Storage','VitalInfo', 'extraInfo','$ionicLoading',
+  function($scope,Data,Storage,VitalInfo,extraInfo,$ionicLoading){
   $scope.$on('$viewContentLoading', 
   function(event){
     console.log('viewContentLoading');
@@ -1013,6 +1051,11 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
   $scope.test = function()
   {
     $scope.BMI.BMI=($scope.BMI.weight/($scope.BMI.height * $scope.BMI.height));
+    if($scope.BMI.BMI<0.00185)$scope.BMI.result = "您的体重有点过轻了";
+    else if($scope.BMI.BMI>=0.00185&&$scope.BMI.BMI<0.002499)$scope.BMI.result = "您的体重属于正常范围";
+    else if($scope.BMI.BMI>=0.0025&&$scope.BMI.BMI<0.0028)$scope.BMI.result = "您的体重过重了";
+    else if($scope.BMI.BMI>=0.0028&&$scope.BMI.BMI<0.0032)$scope.BMI.result = "您已经属于肥胖行列了";
+    else if($scope.BMI.BMI>=0.0032)$scope.BMI.result = "您现在已经非常肥胖了";
     console.log($scope.BMI.BMI);
   };
   $scope.saveWH = function()
@@ -1047,7 +1090,12 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
       console.log(s);
       VitalInfo.PostPatientVitalSigns(save[1]).then(function(s){
         console.log(s);
-        alert("保存成功");
+        $ionicLoading.show({
+          template: '保存成功',
+          noBackdrop: true,
+          duration: 700
+        });
+        // alert("保存成功");
       })
     })
   }
@@ -1115,6 +1163,10 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
        
       var template = '<ion-popover-view style="opacity:1"></ion-popover-view>'; //弹框初始化
       var popover=$ionicPopover.fromTemplate(template);
+     
+      $http.get('data/guide-sbp.json').success(function(data) {
+         SBPGuide=data;  //json文件前两项分别为 初始线 和目标线
+       });
 
       $scope.RemainingDays='0';
       $scope.ProgressRate='0';
@@ -1154,10 +1206,6 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
          }     
        );
     }
-
-       $http.get('data/guide-sbp.json').success(function(data) {
-         SBPGuide=data;  //json文件前两项分别为 初始线 和目标线
-       });
 
        $http.get('data/guide-dbp.json').success(function(data) {
          DBPGuide=data;
@@ -1371,6 +1419,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
               //type: "line",
               id: "graph1",
               valueField: "Value",
+              labelText:"[[Value]]",
               lineColor: "#EA7500",
               //lineColorField:"SignColor",
               lineThickness : 3,
@@ -1476,7 +1525,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
             graphFillAlpha:0,
             height:30,
             dragIconHeight:28,
-            dragIconWidth:20,
+            dragIconWidth:30,
            //usePeriod: "10mm",     
           },
           responsive: {   //手机屏幕自适应
@@ -1633,10 +1682,10 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
   }])
 // --------我的专员-苟玲----------------
 //我的专员消息列表
-.controller('contactListCtrl',function($scope, $http, $state, $stateParams, Users, Storage){
+.controller('contactListCtrl',function($scope, $http, $state, $stateParams, Users, Storage,CONFIG){
     //console.log($stateParams.tt);
     
-
+    $scope.chatImgUrl=CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/';
     $scope.contactList = {};
     $scope.contactList.list;
 
@@ -1650,28 +1699,59 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
         var promise = Users.GetHealthCoachListByPatient(PatientId, CategoryCode);  
         promise.then(function(data) {   
             $scope.contactList.list = data;
+            for(var i=0;i<$scope.contactList.list.length;i++){
+               if(($scope.contactList.list[i].imageURL=="")||($scope.contactList.list[i].imageURL==null)){
+                $scope.contactList.list[i].imageURL="img/DefaultAvatar.jpg";
+              }
+              else{ $scope.contactList.list[i].imageURL=CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+$scope.contactList.list[i].imageURL;
+              }
+            }
             //console.log($scope.contactList.list);
         }, function(data) {  
         });      
     }
+
+     $scope.transImageURL_doc = function(ImageURL_doc)
+     {
+        Storage.set("ImageURL_doc", ImageURL_doc)
+     }
 })
 
-.controller('ChatDetailCtrl' ,function($scope, $http, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG) 
+.controller('ChatDetailCtrl' ,function($scope, $http, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG, Storage,Data) 
 {
-    //console.log($stateParams.tt);
+    console.log($stateParams.tt);
     $scope.Dialog = {};
     var paraArry = $stateParams.tt.split('&');
     $scope.DoctorId = paraArry[0];
     $scope.DoctorName =  paraArry[1];
-    $scope.imageURL = paraArry[2];
-    $scope.PatientId = "P001";
+    $scope.imageURL = Storage.get('ImageURL_doc');
+
+    $scope.PatientId = Storage.get('UID');
 
     $scope.Dialog.SMScontent = "";
     var WsUserId = $scope.PatientId;
-    var WsUserName = "患者1";
+    var WsUserName = $scope.PatientId; //最好是患者姓名
     var wsServerIP = CONFIG.wsServerIP; 
 
-    $scope.myImage = "img/mine.jpg";
+    $scope.myImage = "img/DefaultAvatar.jpg";
+
+    var urltemp2 = Storage.get('UID') + '/BasicDtlInfo';
+    Data.Users.GetPatientDetailInfo({route:urltemp2}, 
+       function (success, headers) {
+        console.log(success);
+          if( (success.PhotoAddress=="") || (success.PhotoAddress==null))
+          {
+            $scope.myImage = "img/DefaultAvatar.jpg";
+          }
+          else 
+          {
+            $scope.myImage = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile + "/" + success.PhotoAddress;
+          } 
+
+       }, 
+      function (err) {
+        // 目前好像不存在userid不对的情况，都会返回一个结果
+      });  
 
 
     var footerBar; // gets set in $ionicView.enter
