@@ -406,18 +406,25 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 .controller('SlidePageCtrl', ['$scope', '$ionicHistory', '$timeout', '$ionicModal', '$ionicSideMenuDelegate', '$http','NotificationService','$ionicListDelegate','PlanInfo','extraInfo','$ionicPopup', '$state', 'Storage',
    function($scope, $ionicHistory, $timeout, $ionicModal, $ionicSideMenuDelegate, $http,NotificationService,$ionicListDelegate,PlanInfo,extraInfo, $ionicPopup,$state,Storage) {
       $scope.text = 'Hello World!';
-      var get = {
-        PatientId:Storage.get("UID"),
-        PlanNo:'NULL',
-        Module:'M1',
-        Status:'3'
+       ionic.DomUtil.ready(function(){
+          $scope.getexecutingplan();
+       });
+      $scope.getexecutingplan = function()
+      {
+        console.log("1");var get = {
+          PatientId:Storage.get("UID"),
+          PlanNo:'NULL',
+          Module:'M1',
+          Status:'3'
+        }
+        PlanInfo.GetExecutingPlan(get).then(function(s){
+          console.log(s[0]);
+          extraInfo.PlanNo(s[0])
+        },function(e){
+          console.log(e);
+        })
       }
-      PlanInfo.GetExecutingPlan(get).then(function(s){
-        console.log(s[0]);
-        extraInfo.PlanNo(s[0])
-      },function(e){
-        console.log(e);
-      })
+      
       ////获取任务列表数据
       // $http.get('testdata/tasklist.json').success(function(data){
       //  $scope.tasklist = data;
@@ -551,8 +558,8 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 }])
 
 //任务详细
-.controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage',
-function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage) {
+.controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage','$ionicPopup',
+function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage,$ionicPopup) {
   var data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//
   var detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//extraInfo.PlanNo().PlanNo
 
@@ -591,6 +598,9 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     getlist();
   })
   $scope.doRefresh = function() {
+    $scope.getexecutingplan();
+    data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
+    detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     getlist();
   }
   var getlist = function()
@@ -630,6 +640,18 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
       $scope.taskdetaillist[index].Status='1';
     })
   }
+  $scope.showmore = function(s)
+  {
+    // alert(s);
+    $ionicPopup.alert({
+      title: '详细',
+      template: s,
+      okText:'关闭'
+    }).then(
+      function(res) {
+        //
+    });
+  }
 }])
 
 //任务列表
@@ -640,6 +662,8 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     get();
   });
   $scope.doRefresh = function() {
+    $scope.getexecutingplan();
+    data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     get();
   }
   var get = function()
