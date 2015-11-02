@@ -1125,7 +1125,6 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 
       //获取是否有正在执行的计划，如果没有则不显示
       function init_view(){
-console.log(UserId);
         $scope.showGraph=false;  //控制图或者“没有计划”的显示
         $scope.graphText="正在加载中，请等待...";
 
@@ -1543,6 +1542,10 @@ console.log(UserId);
         // });
 
       } //function end 
+
+      $scope.refrsh_graph = function() {
+        init_view();
+      }
 
   }])
 
