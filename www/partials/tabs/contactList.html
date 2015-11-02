@@ -10,7 +10,7 @@
   
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="item in contactList.list" type="item-text-wrap" href="#/tab/chats/{{item.HealthCoachID}}&{{item.Name}}&{{item.imageURL}}">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="item in contactList.list" type="item-text-wrap" href="#/tab/chats/{{item.HealthCoachID}}&{{item.Name}}" ng-click="transImageURL_doc(item.imageURL)">
         <img ng-src="{{item.imageURL}}">
         <h2>{{item.Name}}</h2>
         <p>{{chat.latestMessage.Content}}</p>
