@@ -1,0 +1,46 @@
+<ion-view title="填写个人信息">
+  <ion-nav-bar class="bar-dark nav-title-slide-ios7" style="" >
+    <ion-nav-back-button class="button-icon ion-arrow-left-c">
+    </ion-nav-back-button>
+  </ion-nav-bar>
+  <div  style="position: absolute;top: 43px;z-index:100;display: block;height: 2.5px;background-color: #33cd5f;{{barwidth}}" ></div>
+  <ion-content padding="true" style="">
+    
+    <div  class="list">
+      <label class="item item-input">
+        <span class="input-label">姓名</span>
+        <input  ng-model="userName" type="text">
+      </label>
+
+      <label  class="item item-input item-select">
+        <div class="input-label">性别</div>
+        <select ng-model="userGender">
+          <!-- <option selected>选择性别</option> -->
+          <option >女</option>
+          <option>男</option>
+        </select>
+      </label>
+      
+      <a class="item" href="#">
+        
+        <ionic-datepicker input-obj="datepickerObject">
+        <div>
+        <span>生日</span>
+        <span class="item-note ">
+          {{birthday}}
+        </span>
+      </div>
+        </ionic-datepicker>
+      </a>
+
+      <span style="color:white">00</span><span style="color:#c55e19">{{logStatus}}</span>
+      <button class="button button-block button-stable" ng-click ="infoSetup(userName,userGender)">
+            注册
+      </button>
+    </div>
+ 
+
+           
+  </ion-content>
+          
+</ion-view>

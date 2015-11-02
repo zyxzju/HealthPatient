@@ -1,0 +1,39 @@
+<ion-view view-title='详细'>
+    <ion-content scroll="true">
+        <ion-refresher
+            pulling-text="下拉刷新。。。"
+            spinner='ripple'
+            refreshing-text="努力加载中"
+            on-refresh="doRefresh()">
+        </ion-refresher>
+        <ion-list>
+            <ion-item href="{{task.go}}" ng-repeat="task in taskdetaillist" class="item item-thumbnail-left item-icon-right" ng-click="{{task.click}}('{{task.Code}}')">
+                <img ng-src="img/icon/TF0000.png">
+                <h2>{{task.Name}}</h2>
+                <h2>{{task.js}}</h2>
+                <i class="icon">
+                    <span class="" ng-if=(task.Status==1)>
+                        已完成
+                    </span>
+                </i>
+                <ion-option-button class="button-positive" ng-click="done({{task.index}})">完成</ion-option-button>
+                <ion-option-button class="button-calm" ng-click="openModal()">添加提醒</ion-option-button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
+<script id="helist.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar>
+            <button class="button button-icon ion-ios-arrow-left" ng-click="closeModal()">返回</button>
+            <h1 class="title">观看</h1>
+        </ion-header-bar>
+        <ion-content>
+            <ion-list>
+            <ion-item href="" ng-repeat="hl in helist" class="item item-icon-right" ng-click="openUrl(hl.OptionCategory)">
+                <h2>{{hl.Name}}</h2>
+            </ion-item>
+        </ion-list>
+        </ion-content>
+    </ion-modal-view>
+</script>

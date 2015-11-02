@@ -1,0 +1,55 @@
+
+<ion-view view-title="记录">
+  <ion-nav-buttons side="primary"><!-- style="height:600px;" hide-nav-bar="true" -->
+    <button class="button button-clear" ng-click="toggleLeftMenu()">
+            <i class="icon ion-navicon"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="secondary">
+    <a class="button icon-left ion-calendar button-clear" href="#/healthCoach/healthCoachList"></a>
+  </ion-nav-buttons>
+
+  <ion-content class="padding">
+    <div class="button-bar bar-light">
+      <a class="button button-energized" href="#/tab/targetGraph" >依从率图</a>
+      <a class="button" href="#/tab/recordList">体征表</a>
+    </div>
+
+<div ng-if="showGraph==true">
+    <div class="row">
+      <div class="col" style="text-align:center;">
+         <p><i class="icon ion-arrow-swap"></i>体征选择</p>
+         <select ng-model="vitalInfo" ng-change="changeVitalInfo(vitalInfo)" ng-options="option.SignName for option in options" class="select-block select-calm">
+         </select>
+
+      </div>
+      <div class="col col-67" style="text-align:center">
+         <p> {{orignalValue}}</p> <!-- <img src="img/original.png"> -->
+         <p> {{targetValue}}</p> <!-- <img src="img/target.png"> -->
+       </div>
+    </div>
+
+    <div style='width: 80%; height: 450px;margin-left:10%;' id='chartdiv'>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;"> 
+      <p style="color:#2894FF;font-size:16px;">计划整体依从率：{{PlanCompliance}}%</p>
+      <p style="color:#2894FF;font-size:16px;">计划进度{{ProgressRate*100}}%，离结束还有{{RemainingDays}}天</p>
+    </div>
+</div>   
+
+<div ng-if="showGraph==false">
+   <div style="text-align:center;margin-top:50px;">    
+      <p style="color:#2894FF;font-size:16px;">{{graphText}}</p>
+    </div>
+</div>  
+  </ion-content>
+</ion-view>
+
+      <!-- <select class="select-block select-calm">
+        <option selected="">收缩压</option>
+        <option >舒张压</option>
+        <option>脉率</option>
+      </select> -->
+      <!-- <select ng-options="option.name as option.name for option in options"
+    ng-model="item" ng-change="update(item)"> -->

@@ -1,0 +1,38 @@
+ 
+<ion-view view-title="选择专员" hide-nav-bar="true">
+    <ion-content>
+    <div class="bar bar-calm item-input-inset">
+     <button class="button button-icon icon ion-ios-arrow-left" ng-click="nvGoback()">返回</button> 
+     <h1 class="title">选择专员</h1>
+    </div>
+    <!-- <div class="bar bar-calm item-input-inset"> hide-nav-bar="true"
+      <button class="button button-icon icon ion-navicon" style="text-align:left;padding-right:20px" ng-click="toggleLeftMenu()"></button> 
+      <h1 class="title">选择专员</h1>
+    </div> -->
+
+    <div class="bar item-input-inset">
+       <button class="button icon-left ion-ios-eye button-clear button-dark" ng-click="openModal()">排序/筛选</button>&nbsp;
+      <label class="item-input-wrapper">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" placeholder="健康专员ID/姓名" ng-model="query"> 
+      </label>
+       <button class="button button-clear button-dark" ng-click="openPopover($event)">搜索</button>
+    </div>
+
+    <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+    <ion-list>
+        <ion-item href='#/healthCoach/{{healthCoach.healthCoachId}}' ng-repeat="healthCoach in healthCoachList | filter:query | orderBy:orderProp:reverseSort" class="item-avatar">
+            <img src="{{healthCoach.imageURL}}">
+            <span class="item-note">
+              评分：{{healthCoach.score}}
+            </span>
+            <h2>{{healthCoach.name}}&nbsp;{{healthCoach.sex}}/{{healthCoach.age}}</h2>
+            <p>负责：{{healthCoach.modoule}}</p>
+            <div class="item-button-right">
+              <button class="button button-clear"><i class="icon ion-ios-arrow-right"></i>
+              </button>
+            </div>
+        </ion-item> 
+    </ion-list>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,16 @@
+<ion-view view-title="吃药">
+	<ion-content>
+	<progress id="myProgress" value="75" max="100"></progress>
+	<button class='button button-assertive button-full button-outline' ng-click='test()'>{{title | checkmark}}</button>
+		<p>{{r.UserId}}</p>
+	<ionic-datepicker input-obj="datepickerObject">
+	  <button class="button button-block button-positive"> {{datepickerObject.inputDate | date:'dd - MMMM - yyyy'}}</button>
+	</ionic-datepicker>
+	<div id="chartdiv"></div>
+	  <div class="button-bar padding">
+		  <a class="button button-positive button-outline" ng-click="test()">测试</a>
+		  <a class="button button-positive button-outline" ng-click="save()">保存</a>
+		</div>
+	</ion-content>
+	</ion-content>
+</ion-view>

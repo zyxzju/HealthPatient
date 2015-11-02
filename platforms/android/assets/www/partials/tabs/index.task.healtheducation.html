@@ -1,0 +1,26 @@
+<ion-view view-title="健康教育">
+	<ion-content scroll="true">
+		<!-- <button class='button button-assertive button-full' ng-click="play()">paly?</button>
+		<button class='button button-positive button-full' ng-click="close()">close?</button> -->
+		<ion-list>
+			<ion-item ng-click="play(resource)" ng-repeat="resource in helist" class="item-thumbnail-left">
+				<img ng-src="{{resource.Preview}}">
+				<h2>{{resource.name}}</h2>
+			</ion-item>
+		</ion-list>
+	</ion-content>
+	<script id="my-modal.html" type="text/ng-template">
+		<ion-modal-view>
+		    <ion-header-bar>
+				<button class="button button-icon ion-ios-arrow-left" ng-click="closeModal()">返回</button>
+				<h1 class="title">{{mediatitle}}</h1>
+		    </ion-header-bar>
+		    <ion-content style="text-align:center">
+		    	<h1>{{mediadescribe}}</h1>
+				<video id='myVideo' src='' width="320" height="240"controls="controls">
+					Your browser does not support the video tag.
+				</video>
+		    </ion-content>
+		</ion-modal-view>
+	</script>
+</ion-view>

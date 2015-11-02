@@ -1,0 +1,22 @@
+<ion-view view-title="测量体重">
+	<ion-content scroll="false">
+		<div class="list list-inset">
+			<label class="item item-input">
+				<span class="input-label">身高/米</span>
+				<input type="number" ng-model='BMI.height'>
+			</label>
+			<label class="item item-input">
+				<span class="input-label">体重/千克</span>
+				<input type="number" ng-model='BMI.weight'>
+			</label>
+			<label class="item item-input" ng-if=BMI.BMI>
+				BMI<br/>
+				BMI = 体重/(身高*身高)={{BMI.BMI.toFixed(4)}}
+			</label>
+		</div>
+		<div class="button-bar padding">
+			<a class="button button-positive button-outline" ng-click="test()">BMI</a>
+			<a class="button button-positive button-outline" ng-click="">保存</a>
+		</div>
+	</ion-content>
+</ion-view>

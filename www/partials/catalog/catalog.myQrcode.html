@@ -1,0 +1,24 @@
+<ion-view view-title="二维码名片">
+<ion-nav-buttons side="primary">
+      <button class="button button-icon ion-ios-arrow-left" ng-click="nvGoback()">{{lastviewtitle}}</button>
+    </ion-nav-buttons>
+    <ion-content scroll="true">
+        <div class="list card">
+            <div class="item item-avatar">
+                <img src="img/7.jpg">
+                <h2>赵艳霞</h2>
+                <p>女</p>
+            </div>
+
+            <div class="item item-body full-image" style="text-align:center">
+                <qrcode  version=5 error-correction-level="M" size=300 data="{{bar}}" href="{{bar}}"></qrcode>
+                <p>
+                    欢迎您使用慢病系统！
+                </p>
+              
+            </div>
+
+<button ng-click="signoutConfirm()"> </button>
+        </div>
+    </ion-content>
+</ion-view>

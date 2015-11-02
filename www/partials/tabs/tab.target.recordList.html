@@ -1,0 +1,57 @@
+
+<ion-view view-title="记录" >
+  
+  <!-- <ion-nav-buttons side="primary">style="height:600px;" hide-nav-bar="true"
+   <button class="button button-clear" ng-click="toggleLeftMenu()">
+            <i class="icon ion-navicon"></i>
+    </button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="secondary">
+      <a class="button icon-left ion-calendar button-clear" href="#/healthCoach/healthCoachList"></a>
+    </ion-nav-buttons> -->
+
+    <ion-content class="padding">
+
+  <div class="button-bar bar-light">
+          <a class="button " href="#/tab/targetGraph" >依从率图</a>
+          <a class="button button-energized" href="#/tab/recordList">体征表</a>
+          <!-- <a class="button " href="#/tab/target/graph" >依从率图</a>
+          <a class="button button-energized" href="#/tab/target/recordList">体征表</a> -->
+  </div>
+
+
+<div ng-if="showRcordList==true">
+
+<div class="day" ng-repeat="(dayIndex, day) in SignDetailByDs">
+  <div class="item item-divider item-divider-calm">
+    {{day.Date}} {{day.WeekDay}}
+  </div><!-- item divider -->
+  <ion-list>
+    <ion-item class="item-text-wrap item-icon-right" ng-repeat="item in day.SignDetailList">
+      <h>{{item.DetailTime}}</h>
+      <p><b> 血压：{{item.SBPValue}}/{{item.DBPValue}}mmHg</b></p>
+      <p><b>脉率：{{item.PulseValue}}次</b></p>
+      <p><b>血糖：</b></p>
+      <button class="button button-clear icon ion-star button-assertive" ng-click="toggleStar(item)" ng-show="item.star"></button>
+      <ion-option-button class="button-calm" ng-click="toggleStar(item)"><i class="icon ion-star"></i></ion-option-button>
+      <ion-option-button class="button-assertive" ng-click="onItemDelete(dayIndex, item)"><i class="icon ion-trash-a"></i></ion-option-button>
+    </ion-item>
+  </ion-list>
+</div>
+
+
+     <button class="button button-calm button-full" ng-click=loadMore()>
+      {{status}}
+    </button>
+
+
+</div>
+
+<div ng-if="showRcordList==false">
+   <div style="text-align:center;margin-top:50px;">    
+      <p style="color:#2894FF;font-size:16px;">暂时没有数据</p>
+    </div>
+</div> 
+
+  </ion-content>
+</ion-view>

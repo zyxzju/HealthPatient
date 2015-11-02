@@ -1,0 +1,58 @@
+[
+     {
+        "value": "85",
+        "toValue": "#CC0000",
+        "label": "",
+        "lineColor": "#FF5151",
+        "lineAlpha": "1",
+        "dashLength": "8",
+        "color": "#CC0000",
+        "fontSize": "8",
+        "position": "right",
+        "inside": "",
+        "fillAlpha": "",
+        "fillColor": ""
+    },
+    {
+        "value": "70",
+        "toValue": "#CC0000",
+        "label": "",
+        "lineColor": "#CC0000",
+        "lineAlpha": "1",
+        "dashLength": "4",
+        "color": "#CC0000",
+        "fontSize": "14",
+        "position": "right",
+        "inside": "",
+        "fillAlpha": "",
+        "fillColor": ""
+    },{
+        "value": "129",  
+        "toValue": "#CC0000",
+        "label": "",
+        "lineColor": "#FF5151",
+        "lineAlpha": "1",
+        "dashLength": "8",
+        "color": "#CC0000",
+        "fontSize": "8",
+        "position": "right",
+        "inside": "",
+        "fillAlpha": "",
+        "fillColor": ""
+    },
+    {
+        "value": "110",
+        "toValue": "#CC0000",
+        "label": "",
+        "lineColor": "#CC0000",
+        "lineAlpha": "1",
+        "dashLength": "4",
+        "color": "#CC0000",
+        "fontSize": "14",
+        "position": "right",
+        "inside": "",
+        "fillAlpha": "",
+        "fillColor": ""
+    },
+    
+]

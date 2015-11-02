@@ -1,0 +1,38 @@
+<ion-view view-title="血糖测量">
+	<ion-content scroll="false">
+	<!-- 凌晨/空腹/早餐后/午餐前/午餐后/晚餐前/晚餐后/睡前
+	测量值 mmol/L 控制目标值
+	其他信息
+	删除/保存 -->
+		<!-- <button class='button button-clear button-small button-full button-outline button-positive' ng-click=""></button> -->
+		<form>
+			<div class="list list-inset">
+				<label class="item item-input item-select item-stacked-label">
+					<div class="input-label">
+						请选择时段{{select}}
+					</div>
+					<select ng-model="bloodglucose.select">
+						<option value="早餐前">早餐前</option>					
+						<option value="早餐后">早餐后</option>
+						<option value="午餐前">午餐前</option>
+						<option value="午餐后">午餐后</option>
+						<option value="晚餐前">晚餐前</option>
+						<option value="晚餐后">晚餐后</option>
+						<option value="凌晨">凌晨</option>
+						<option value="睡前">睡前</option>
+					</select>
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">测量值</span>
+					<input type="number" ng-model='bloodglucose.mvalue'>
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">目标值:{{bloodglucose.tvalue}}</span>
+				</label>
+			</div>
+			<div class="button-bar padding">
+				<a class="button button-positive button-outline" ng-click="savebloodglucose()">保存</a>
+			</div>
+		</form>
+	</ion-content>
+</ion-view>

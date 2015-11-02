@@ -1,0 +1,72 @@
+[
+    {
+        "value": "0",
+        "toValue": "6.0",
+        "label": "",
+        "lineColor": "",
+        "lineAlpha": "",
+        "dashLength": "",
+        "color": "#CC0000",
+        "fontSize": "14",
+        "position": "right",
+        "inside": "true",
+        "fillAlpha": "0.1",
+        "fillColor": "#8080C0"
+    },
+    {
+        "value": "6.0",
+        "toValue": "11.0",
+        "label": "",
+        "lineColor": "",
+        "lineAlpha": "",
+        "dashLength": "",
+        "color": "#CC0000",
+        "fontSize": "14",
+        "position": "right",
+        "inside": "true",
+        "fillAlpha": "0.1",
+        "fillColor": "#00DB00"
+    },
+    {
+        "value": "11.0",
+        "toValue": "20",
+        "label": "",
+        "lineColor": "",
+        "lineAlpha": "",
+        "dashLength": "",
+        "color": "#CC0000",
+        "fontSize": "14",
+        "position": "right",
+        "inside": "true",
+        "fillAlpha": "0.1",
+        "fillColor": "#FF0000"
+    },
+    {
+        "value": "6.0",
+        "toValue": "#CC0000",
+        "label": "6.0",
+        "lineColor": "#CC0000",
+        "lineAlpha": "0.15",
+        "dashLength": "",
+        "color": "#CC0000",
+        "fontSize": "8",
+        "position": "left",
+        "inside": "",
+        "fillAlpha": "",
+        "fillColor": ""
+    },
+    {
+        "value": "11.0",
+        "toValue": "#CC0000",
+        "label": "11.0",
+        "lineColor": "#CC0000",
+        "lineAlpha": "0.15",
+        "dashLength": "",
+        "color": "#CC0000",
+        "fontSize": "8",
+        "position": "left",
+        "inside": "",
+        "fillAlpha": "",
+        "fillColor": ""
+    }
+]

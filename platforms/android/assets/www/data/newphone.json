@@ -1,0 +1,11 @@
+[
+     { "Date":"20150911","DBPValue":"#", "PulseValue":"#","BloodSugar":"#",
+       "BulletValue":"1","BulletColor":"#DADADA","CustomBullet":"","value":{"Bloodpressure_1":"80"} ,
+       "BulletDescription":"体征测量：0/4<br>合理饮食：0/3<br>"},
+     { "Date":"20150912","DBPValue":"80", "PulseValue":"62","BloodSugar":"6.8",  
+       "BulletValue":"1","BulletColor":"#DADADA","CustomBullet":"img/amcharts/customBullet.png","BulletDescription":"体征测量：4/4<br>合理饮食：3/3<br>"},
+       {"Date":"20150913","DBPValue":"70", "PulseValue":"62","BloodSugar":"10.8",  "BulletValue":"1","BulletColor":"#77777","CustomBullet":"","BulletDescription":"体征测量：4/4<br>合理饮食：0/3<br>"}
+
+
+
+

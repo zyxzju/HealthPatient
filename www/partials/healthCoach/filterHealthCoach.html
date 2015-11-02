@@ -1,0 +1,55 @@
+
+
+  <ion-modal-view>    
+
+       <ion-header-bar class="bar bar-header bar-positive">
+          <button class="button icon-left ion-chevron-left button-clear" ng-click="modal.hide()">返回</button>
+          <h1 class="title">排序与和筛选</h1>
+          <button class="button button-clear button-primary" ng-click="finish()">完成</button>
+        </ion-header-bar>
+        <ion-content> 
+        <ion-list>
+
+        <ion-item style="padding-top: 3px;"> 
+        <button class="button icon-right ion-android-arrow-up button-clear">排序 </button>
+        <div class="item-input-inset" style="padding: 1px;">
+          <!-- <ion-radio ng-value="sex" ng-model="ng" ng-change="radioChange()">姓名</ion-radio>
+          <ion-radio ng-value="age" ng-model="ng" ng-change="radioChange()">年龄</ion-radio>
+          <ion-radio ng-value="age" ng-model="ng" ng-change="radioChange()">评分</ion-radio> -->
+          <ion-radio ng-repeat="item in sideList" ng-value="item.value"
+                     ng-model="item.value" ng-click="sideChange(item)">
+             {{ item.text }}
+         </ion-radio>
+        </div> 
+         <ion-toggle ng-model="reverseSort" toggle-class="toggle-calm" ng-change="Change()">倒序开关</ion-toggle>
+        </ion-item>
+
+        <ion-item style="padding-top: 3px;"> 
+        <button class="button icon-right ion-ios-flask-outline button-clear">筛选</button>
+        <ion-toggle toggle-class="toggle-calm">筛选开关</ion-toggle> <!-- ng-model="" ng-checked="" -->
+          <div class="item  item-input-inset">
+          <button class="button button-clear dark">选择性别：</button>
+          <!-- <ion-checkbox ng-checked="true">男</ion-checkbox>
+          <ion-checkbox ng-checked="true">女</ion-checkbox> -->
+          <ion-checkbox ng-repeat="item in sexList"
+                        ng-model="item.checked" 
+                        ng-checked="item.checked">
+            {{ item.text }}
+          </ion-checkbox>
+         </div>
+         <div class="item" style="padding-top:1.0px;"> 
+          <button class="button button-clear dark">负责模块：</button>
+          <ion-checkbox ng-checked="true">高血压</ion-checkbox>
+          <ion-checkbox ng-checked="true">糖尿病</ion-checkbox>
+          <ion-checkbox ng-checked="true">心衰</ion-checkbox>
+         </div>  
+<!--          <div class="item range range-calm">
+            <i class="icon ion-ios-lightbulb-outline"></i>年龄
+            <input type="range" name="volume" min="0" max="100" value="25">
+            <i class="icon ion-ios-lightbulb"></i>
+          </div> 
+        </ion-item> -->
+
+        </ion-list>
+    </ion-content>
+</ion-modal-view>

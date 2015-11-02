@@ -1,0 +1,224 @@
+<ion-view view-title="个人信息设置" cache-view="false">
+  <ion-nav-buttons side="primary">
+      <button class="button button-icon ion-ios-arrow-left" ng-click="nvGoback()">返回
+      </button>
+  </ion-nav-buttons>
+    
+  <ion-content>
+    <ion-item style="border:none; text-align:center" >
+         <img ng-src="{{imgurl}}" name="Photo" ng-click="onClickCamera($event)" style="border-radius:50%; height:30%; width:30%" />
+         <!-- <img src="{{url}}venkman.jpg" name="Photo" ng-click="onClickCamera($event)" style="border-radius:50%; height:30%; width:30%" /> -->
+         <!-- <img ng-show="imgURI != undefined"  ng-click="onClickCamera($event)" ng-src="{{imgURI}}" style="border-radius:50%; height:30%; width:30%" /> -->
+         <!-- <img ng-show="imgURI == undefined" ng-click="onClickCamera($event)" ng-src="img/avatar.jpg" style="border-radius:50%; height:30%; width:30%" /> -->
+         <h2><span>{{BasicInfo.UserName}}</span><span style="margin-left:10%;">{{BasicInfo.UserId}}</span></h2>
+    </ion-item>
+    <!-- 上传照片的弹出框 -->
+    <script id="my-popover.html" type="text/ng-template">
+      <ion-popover-view>
+        <ion-header-bar class="bar-calm">
+          <h1 class="title">上传头像</h1>
+        </ion-header-bar>
+        <ion-content>
+          <ion-list> 
+            <div class = "padding">
+              <button class="button button-block button-primary " ng-click="getPhoto()">
+                  照相机
+              </button>
+            
+              <button class="button button-block button-primary " ng-click="onClickCameraPhotos()">
+                  相册
+              </button>
+            </div>
+            <div class = "padding">
+              <button class="button button-block button-primary " ng-click="onClickCameraCancel()">
+                  取消
+              </button>
+            </div>
+          </ion-list>
+        </ion-content>
+      </ion-popover-view>
+    </script>
+    <!-- 上传照片的弹出框 -->
+    <ion-list>
+     <div class="list card">
+     <!--  <ion-item class="item-stable" ng-click="toggle1()" ng-class="{active: isShown1()}">
+        <i class="icon" ng-class="isShown1() ? 'ion-android-arrow-dropdown' : 'ion-android-arrow-dropright'"></i> -->
+      <ion-item class="item-stable">
+        <i class="icon ion-android-arrow-dropdown"></i>
+        &nbsp;
+         基本信息
+      </ion-item> 
+            <!-- <ion-item class="item-accordion" ng-show="isShown1()"> -->
+      <ion-item class="item-accordion">
+        <div class="row">
+          <div class="col" style="width:100%">
+            <span class="input-label">性别</span> 
+          </div>  
+          <div class="col col-67">
+            <input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="1" />  男
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="2"/>  女
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="3" />  其他
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <span class="input-label">出生日期</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+             <!-- <a class="item" href="#"> -->
+               <ionic-datepicker input-obj="datepickerObject">
+               <!-- <div> -->
+                <!-- <span>生日</span> -->
+                <span style="text-align:left">
+                {{BasicInfo.Birthday}}
+                </span>
+               <!-- </div> -->
+               </ionic-datepicker>
+             <!-- </a> -->
+          </div>
+        </div>
+        <!-- <div class="row">
+          <div class="col">
+            <span class="input-label">医保类型</span> 
+          </div>  
+          <div class="col col-67">
+             <select ng-model="BasicInfo.InsuranceTypeText" ng-options="InsuranceType.Name as InsuranceType.name InsuranceType.Code as InsuranceType.value for InsuranceType in InsuranceTypes"> -->
+              <!-- <option>as InsuranceType.value group by InsuranceType.Name </option> -->
+             <!-- </select> -->
+          <!-- <input class="item-input-wrapper" type="text" ng-model="BasicInfo.InsuranceTypeText" placeholder="请选择您的医保类型" style="width:408px"> -->
+        <!--   </div>
+        </div> -->
+      </ion-item>
+     </div>
+
+     <div class="list card">
+      <ion-item class="item-stable" ng-click="toggle2()" ng-class="{active: isShown2()}">
+        <i class="icon" ng-class="isShown2() ? 'ion-android-arrow-dropdown' : 'ion-android-arrow-dropright'"></i>
+        &nbsp;
+         体征信息
+      </ion-item> 
+      <ion-item class="item-accordion" ng-show="isShown2()">
+        <div class="row">
+          <div class="col">
+            <span class="input-label">血型</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+            <select ng-model="BasicInfo.BloodType">
+              <option value="1">A型</option>
+              <option value="2">B型</option>
+              <option value="3">O型</option>
+              <option value="4">AB型</option>
+              <option value="5">其他</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <span class="input-label">身高(cm)</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+          <input class="item-input-wrapper" type="text" ng-model="BasicDtlInfo.Height" placeholder="请输入您的身高" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <span class="input-label">体重(kg)</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+          <input class="item-input-wrapper" type="text" ng-model="BasicDtlInfo.Weight" placeholder="请输入您的体重" style="width:100%">
+          </div>
+        </div>
+      </ion-item>
+     </div>
+
+     <div class="list card">
+      <ion-item class="item-stable" ng-click="toggle3()" ng-class="{active: isShown3()}">
+        <i class="icon" ng-class="isShown3() ? 'ion-android-arrow-dropdown' : 'ion-android-arrow-dropright'"></i>
+        &nbsp;<!--空格-->
+         身份信息
+      </ion-item> 
+      <ion-item class="item-accordion" ng-show="isShown3()">
+        <div class="row">
+          <div class="col">
+            <span class="input-label">身份证号码</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+          <input class="item-input-wrapper" type="text" ng-model="BasicDtlInfo.IDNo" ng-pattern="/^[0-9A-Za-z_]{1,19}$/" placeholder="请输入您的身份证号码" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <span class="input-label">国籍</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+          <input class="item-input-wrapper" type="text" ng-model="BasicDtlInfo.Nationality" placeholder="请输入您的国籍" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <span class="input-label">职业</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+          <input class="item-input-wrapper" type="text" ng-model="BasicDtlInfo.Occupation" placeholder="请输入您的职业" style="width:100%">
+          </div>
+        </div>
+      </ion-item>
+     </div>
+
+     <div class="list card">
+      <ion-item class="item-stable" ng-click="toggle4()" ng-class="{active: isShown4()}">
+        <i class="icon" ng-class="isShown4() ? 'ion-android-arrow-dropdown' : 'ion-android-arrow-dropright'"></i>
+        &nbsp;<!--空格-->
+         联系信息
+      </ion-item> 
+      <ion-item class="item-accordion" ng-show="isShown4()">
+        <div class="row">
+          <div class="col">
+            <span class="input-label">联系电话</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+          <input class="item-input-wrapper" type="text" ng-model="BasicDtlInfo.PhoneNumber" ng-pattern="/^[0-9A-Za-z_]{1,19}$/" placeholder="请输入您的联系电话" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <span class="input-label">家庭住址</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+          <input class="item-input-wrapper" type="text" ng-model="BasicDtlInfo.HomeAddress" placeholder="请输入您的家庭住址" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <span class="input-label">紧急联系人</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+          <input class="item-input-wrapper" type="text" ng-model="BasicDtlInfo.EmergencyContact" placeholder="请输入您的紧急联系人" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-33">
+            <span class="input-label">紧急联系人电话</span> 
+          </div>  
+          <div class="col col-offset-10" style="width:100%">
+          <input  class="item-input-wrapper" type="text" ng-model="BasicDtlInfo.EmergencyContactPhoneNumber" ng-pattern="/^[0-9A-Za-z_]{1,19}$/" placeholder="请输入您的紧急联系人电话" style="width:100%">
+          </div>
+        </div>
+      </ion-item>
+     </div>
+    </ion-list>
+
+    <!-- <div class="row">
+      <div class="col col-25 col-offset-25">
+         <button ng-click='' class="button button-block button-stable">重置</button>
+      </div>
+      <div class="col col-25"> -->
+      <div>
+         <button ng-click='refresh()' class="button button-block button-calm" style=" width:80%;margin-left:10% ">保存</button>
+      </div>
+    <!-- </div> -->
+  </ion-content>
+</ion-view>
+

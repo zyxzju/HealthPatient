@@ -1,0 +1,70 @@
+<!-- 测量血压 -->
+<ion-view view-title="血压测量">
+	<ion-content scroll="false">
+	 <button class='button button-clear button-small button-full button-outline button-positive' ng-click="openModal()">{{btstatus}}</button>
+	<!--<button class='button button-calm button-full' ng-click="EnableBle()">EnableBle?</button>
+	<button class='button button-assertive button-full' ng-click="ScanDevices()">ScanDevices?</button>
+	<button class='button button-energized button-full' ng-click="ConnectedList()">ConnectedList?</button>
+	<button class='button button-calm button-full' ng-click="DisConnect()">DisConnect?</button>
+	<button class='button button-assertive button-full' ng-click="IsConnected()">IsConnected?</button>
+	<button class='button button-energized button-full' ng-click="SendCtr('{{Bttestdata}}')">SendCtr?</button> -->
+	<!-- <button class='button button-calm button-full' ng-click="getbpmdata()">getbpmdata?</button> -->
+	<!-- <p>高压：{{highbp}}</p><p>低压：{{lowbp}}</p><p>脉率：{{jn}}</p> -->
+	<div id="chartdiv"></div>
+	  <div class="button-bar padding">
+		  <a class="button button-positive button-outline" ng-click="realstart()">测量</a>
+		  <a class="button button-positive button-outline" ng-click="save()">保存</a>
+		</div>
+	</ion-content>
+</ion-view>
+
+<style>
+#chartdiv
+	{
+		background: #282828;
+		margin-left:auto;
+		margin-right:auto;
+		width:90%;
+		color: #fff;
+		height: 400px;
+		font-size: 11px;
+	}
+</style>
+
+<script id="setbt.html" type="text/ng-template">
+  <ion-modal-view>
+    <div class="row">
+		<div class="col">
+			<p>已配对的设备</p><hr/>
+		</div>
+	</div>
+	<!-- <hr/> -->
+	<ion-list>
+	  <ion-item ng-click='ConnectDevice("{{d.address}}")' ng-repeat="d in device_c" class="item-icon-left item-light">
+	   	<i class="icon ion-bluetooth"></i>
+	    <p>{{d.name}}{{d.id}}</p>
+	  </ion-item>
+	</ion-list>
+	<div class="row">
+	  <div class="col col-75"><h5>扫描到的蓝牙设备</h5></div>
+	  <div class="col col-10"><ion-spinner icon="android" class="spinner-assertive" ng-if=showscanicon>123</ion-spinner></div>
+	  <!-- 上边绑定到ng-if的变量不能加{{}}？？？ -->
+	  <div class="col col-15"><button class="button button-positive button-small" ng-click="ScanDevices()">搜索</button></div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<hr/>
+		</div>
+	</div>
+	<!-- <p>扫描到的蓝牙设备</p><ion-spinner icon="ripple" class="spinner-positive"></ion-spinner> -->
+	<!-- <hr/> -->
+	<ion-list>
+	  <ion-item ng-click='ConnectDevice("{{d.address}}")' ng-repeat="d in device_a" class="item-icon-left item-light">
+	  	<!-- 上边的 ConnectDevice("{{d.address}}") 函数中必须加双引号，否则不通过 -->
+	   	<i class="icon ion-bluetooth"></i>
+	    <p>{{d.name}}{{d.address}}</p>
+	  </ion-item>
+	</ion-list>
+	<button class='button button-energized' ng-click="closeModal()">closeModal?</button>
+  </ion-modal-view>
+</script>

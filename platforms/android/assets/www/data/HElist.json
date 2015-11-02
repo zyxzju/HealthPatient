@@ -1,0 +1,25 @@
+[
+	{
+		"name":"一首歌曲",
+		"describe":"这就是一首歌曲",
+		"Url":"http://10.12.43.26:8086/resources/myresource/dfp.mp3",
+		"Type":"mp3",
+		"Preview":"img/icon/music.png",
+		"poster":"img/icon/musicbg.jpg"
+	},
+	{
+		"name":"一幅图片",
+		"describe":"这就是一幅图片",
+		"Url":"http://10.12.43.26:8086/resources/myresource/m.jpg",
+		"Type":"jpg",
+		"Preview":"img/icon/picture.png"
+	},
+	{
+		"name":"一个电影",
+		"describe":"这就是一个电影",
+		"Url":"http://10.12.43.26:8086/resources/myresource/Destination.mp4",
+		"Type":"mp4",
+		"Preview":"img/icon/movie.png",
+		"poster":"img/icon/moviebg.jpg"
+	}
+]

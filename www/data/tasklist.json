@@ -1,0 +1,22 @@
+[
+	{
+		"taskname":"测量血压",
+		"taskicon":"img/icon/task1.png",
+		"taskID":"bpm"
+	},
+	{
+		"taskname":"吃药",
+		"taskicon":"img/icon/task2.png",
+		"taskID":"medicin"
+	},
+	{
+		"taskname":"跑步",
+		"taskicon":"img/icon/task3.png",
+		"taskID":"running"
+	},
+	{
+		"taskname":"健康教育",
+		"taskicon":"img/icon/task4.png",
+		"taskID":"healtheducation"
+	}
+]
