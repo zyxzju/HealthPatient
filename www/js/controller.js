@@ -553,8 +553,8 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 //任务详细
 .controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage',
 function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage) {
-  var data={"ParentCode":$stateParams.tl,"PlanNo":'PLAN20151029',"Date":"NOW","PatientId":Storage.get("UID")};//
-  var detail={"ParentCode":'',"PlanNo":'PLAN20151029',"Date":"NOW","PatientId":Storage.get("UID")};//extraInfo.PlanNo().PlanNo
+  var data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//
+  var detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//extraInfo.PlanNo().PlanNo
 
   ////////////////////////////////////
   $ionicModal.fromTemplateUrl('helist.html', {
@@ -635,7 +635,7 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
 //任务列表
 .controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage',function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage) {
   //extraInfo.PlanNo().PlanNo'PLAN20151029'
-  var data={"ParentCode":"T","PlanNo":'PLAN20151029',"Date":"NOW","PatientId":Storage.get("UID")};
+  var data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
   ionic.DomUtil.ready(function(){
     get();
   });
@@ -1029,7 +1029,7 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     });
   });
   $scope.BMI={}
-  var UserId ='PID201506180013'// Storage.get("UID");
+  var UserId =Storage.get("UID");//'PID201506180013'
   var get = [{
     UserId:UserId,
     ItemType:"Weight",
