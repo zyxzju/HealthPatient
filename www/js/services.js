@@ -112,7 +112,7 @@ angular.module('zjubme.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route', {path:'MessageInfo'},
               {
                 submitSMS: {method:'POST', params:{route: 'message'},timeout: 10000},
-                GetSMSDialoguePL:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000}
+                GetSMSDialogue:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000}
         
         });
     };
