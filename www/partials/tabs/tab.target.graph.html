@@ -5,15 +5,17 @@
             <i class="icon ion-navicon"></i>
     </button>
   </ion-nav-buttons>
-  <ion-nav-buttons side="secondary">
+ <!--  <ion-nav-buttons side="secondary">
     <a class="button icon-left ion-refresh button-clear" href="#" ng-click="refrsh_graph()"></a>
-  </ion-nav-buttons>
+  </ion-nav-buttons> -->
 
   <ion-content class="padding">
     <div class="button-bar bar-light">
       <a class="button button-energized" href="#/tab/targetGraph" >依从率图</a>
       <a class="button" href="#/tab/recordList">体征表</a>
     </div>
+
+     <ion-refresher pulling-text="下拉刷新" on-refresh="refrsh_graph()"></ion-refresher>
 
 <div ng-if="showGraph==true">
     <div class="row">

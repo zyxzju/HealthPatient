@@ -1,14 +1,26 @@
 
 <ion-view view-title="记录" >
-  
-  <!-- <ion-nav-buttons side="primary">style="height:600px;" hide-nav-bar="true"
-   <button class="button button-clear" ng-click="toggleLeftMenu()">
-            <i class="icon ion-navicon"></i>
-    </button>
-    </ion-nav-buttons>
-    <ion-nav-buttons side="secondary">
-      <a class="button icon-left ion-calendar button-clear" href="#/healthCoach/healthCoachList"></a>
-    </ion-nav-buttons> -->
+  <style>
+.header .col {
+  background-color:lightgrey;
+}
+
+.col {
+  border: solid 1px grey;
+  border-right-style: none;
+}
+
+.col:last-child {
+  border-right: solid 1px grey;
+}
+
+.row:last-child .col {
+  border-bottom: solid 1px grey;
+}
+.span-no-padding{
+  padding:0;
+}
+  </style>
 
     <ion-content class="padding">
 
@@ -19,39 +31,49 @@
           <a class="button button-energized" href="#/tab/target/recordList">体征表</a> -->
   </div>
 
+<div class="row">
+          <div class="col" >
+            <span  style="width:100%" class="input-label span-no-padding">开始日期</span> 
+          </div>  
+          <div class="col"  ng-click="setStart()" style="background:#97CBFF;color:#FFF">
+               <ionic-datepicker input-obj="datepickerObject"> 
+               <span class="span-no-padding">
+                {{StartDate}}
+                </span>
+             </ionic-datepicker> 
+         </div>
+         <div class="col">
+            <span  style="width:100%"class="input-label span-no-padding">结束日期</span> 
+          </div>
+          <div class="col" ng-click="setEnd()"  style="background:#97CBFF;color:#FFF">
+              <ionic-datepicker input-obj="datepickerObject">
+               <span class="span-no-padding">
+                {{EndDate}}
+                </span>
+             </ionic-datepicker>
+         </div>
+        </div>
+        <br>
+      <div class="row header">
+          <div class="col">日期</div>
+          <div class="col">时间</div>
+          <div class="col">体征</div>
+          <div class="col">值</div>
+          <div class="col">单位</div>
+        </div>
+        <div class="row" ng-repeat="Sign in SignDetailByDs">
+          <div class="col">{{Sign.RecordDate}}</div>
+          <div class="col">{{Sign.RecordTime}}</div>
+          <div class="col"> {{Sign.Name}}</div>
+          <div class="col">{{Sign.Value}}</div>
+          <div class="col">{{Sign.Unit}}</div>
+        </div>
 
-<div ng-if="showRcordList==true">
-
-<div class="day" ng-repeat="(dayIndex, day) in SignDetailByDs">
-  <div class="item item-divider item-divider-calm">
-    {{day.Date}} {{day.WeekDay}}
-  </div><!-- item divider -->
-  <ion-list>
-    <ion-item class="item-text-wrap item-icon-right" ng-repeat="item in day.SignDetailList">
-      <h>{{item.DetailTime}}</h>
-      <p><b> 血压：{{item.SBPValue}}/{{item.DBPValue}}mmHg</b></p>
-      <p><b>脉率：{{item.PulseValue}}次</b></p>
-      <p><b>血糖：</b></p>
-      <button class="button button-clear icon ion-star button-assertive" ng-click="toggleStar(item)" ng-show="item.star"></button>
-      <ion-option-button class="button-calm" ng-click="toggleStar(item)"><i class="icon ion-star"></i></ion-option-button>
-      <ion-option-button class="button-assertive" ng-click="onItemDelete(dayIndex, item)"><i class="icon ion-trash-a"></i></ion-option-button>
-    </ion-item>
-  </ion-list>
-</div>
-
-
-     <button class="button button-calm button-full" ng-click=loadMore()>
-      {{status}}
-    </button>
-
-
-</div>
-
-<div ng-if="showRcordList==false">
-   <div style="text-align:center;margin-top:50px;">    
-      <p style="color:#2894FF;font-size:16px;">暂时没有数据</p>
-    </div>
-</div> 
-
+        <ion-refresher
+            pulling-text="下拉刷新。。。"
+            spinner='ripple'
+            refreshing-text="努力加载中"
+            on-refresh="doRefresh()">
+        </ion-refresher>
   </ion-content>
 </ion-view>
