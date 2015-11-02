@@ -211,7 +211,7 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
 })
 // --------不同平台的相关设置----------------
 .config(function($ionicConfigProvider) {
-  $ionicConfigProvider.views.maxCache(0);
+  $ionicConfigProvider.views.maxCache(3);
   // note that you can also chain configs
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.tabs.style('standard');

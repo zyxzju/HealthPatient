@@ -104,7 +104,7 @@ angular.module('zjubme.services', ['ionic','ngResource'])
             GetSignsDetailByPeriod: {method:'GET', params:{route: 'VitalSign'}, timeout: 10000},
             PostPatientVitalSigns:{method:'POST',params:{route: 'VitalSign'},timeout: 10000},
             // 获取某日期之前，一定条数血压（收缩压/舒张压）和脉率的数据详细时刻列表,用于phone，支持继续加载
-            VitalSigns:{method:'GET',params:{route: 'VitalSigns'},timeout: 10000}
+            VitalSigns:{method:'GET',isArray: true,params:{route: 'VitalSigns',UserId:'@UserId',StartDate:'@StartDate',EndDate:'@EndDate'},timeout: 10000}
       });
     };
 
@@ -645,15 +645,16 @@ angular.module('zjubme.services', ['ionic','ngResource'])
     return deferred.promise;
   };
 
-  self.VitalSigns = function (PatientId,Module,StartDate,Num) {
+  self.VitalSigns = function (UserId,StartDate,EndDate) {
     var deferred = $q.defer();
-    Data.VitalInfo.VitalSigns({PatientId:PatientId,Module:Module,StartDate:StartDate,Num:Num}, function (data, headers) {
+    Data.VitalInfo.VitalSigns({UserId:UserId,StartDate:StartDate,EndDate:EndDate}, function (data, headers) {
       deferred.resolve(data);
       }, function (err) {
       deferred.reject(err);
       });
     return deferred.promise;
   };
+  
   self.GetLatestPatientVitalSigns = function (data) {
     var deferred = $q.defer();
     Data.VitalInfo.GetLatestPatientVitalSigns(data, function (data, headers) {

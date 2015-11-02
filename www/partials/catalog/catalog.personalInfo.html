@@ -10,7 +10,7 @@
          <!-- <img src="{{url}}venkman.jpg" name="Photo" ng-click="onClickCamera($event)" style="border-radius:50%; height:30%; width:30%" /> -->
          <!-- <img ng-show="imgURI != undefined"  ng-click="onClickCamera($event)" ng-src="{{imgURI}}" style="border-radius:50%; height:30%; width:30%" /> -->
          <!-- <img ng-show="imgURI == undefined" ng-click="onClickCamera($event)" ng-src="img/avatar.jpg" style="border-radius:50%; height:30%; width:30%" /> -->
-         <h2><span>{{BasicInfo.UserName}}</span><span style="margin-left:10%;">{{BasicInfo.UserId}}</span></h2>
+         <h2>{{BasicInfo.UserId}}</h2>
     </ion-item>
     <!-- 上传照片的弹出框 -->
     <script id="my-popover.html" type="text/ng-template">
@@ -51,6 +51,14 @@
             <!-- <ion-item class="item-accordion" ng-show="isShown1()"> -->
       <ion-item class="item-accordion">
         <div class="row">
+          <div class="col">
+            <span class="input-label">姓名</span> 
+          </div>  
+          <div class="col col-67" style="width:100%">
+          <input class="item-input-wrapper" type="text" ng-model="BasicInfo.UserName" placeholder="请输入您的姓名" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
           <div class="col" style="width:100%">
             <span class="input-label">性别</span> 
           </div>  
@@ -71,7 +79,7 @@
                <ionic-datepicker input-obj="datepickerObject">
                <!-- <div> -->
                 <!-- <span>生日</span> -->
-                <span style="text-align:left">
+                <span style="text-align:left width:100% height:100%">
                 {{BasicInfo.Birthday}}
                 </span>
                <!-- </div> -->
