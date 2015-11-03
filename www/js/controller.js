@@ -302,7 +302,105 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 }])
 
 //获取验证码  
-.controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage', 'userservice','loading', function($scope, $state,$interval,$rootScope,Storage,userservice,loading) {
+// .controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage', 'userservice','loading', function($scope, $state,$interval,$rootScope,Storage,userservice,loading) {
+//   $scope.barwidth="width:0%";
+//   var setPassState=Storage.get('setPasswordState');
+//   $scope.veriusername="" 
+//   $scope.verifyCode="";
+//   $scope.veritext="获取验证码";
+//   $scope.isable=false;
+//   $scope.gotoReset = function(veriusername,verifyCode){
+//     if(veriusername!=0 && verifyCode!=0){
+//       $rootScope.userId=veriusername;
+//       var promise=userservice.checkverification(veriusername,'verification',verifyCode);
+//       promise.then(function(data){
+//         if(data.result==1){
+//           $scope.logStatus='验证成功';
+//           $state.go('setpassword');
+//         }
+//       },function(data){
+//         if(data.data==null && data.status==0){
+//           $scope.logStatus='连接超时！';
+//           return;          
+//         }
+//         $scope.logStatus=data.statusText;
+//     });
+//     }else{
+//       $scope.logStatus="请输入完整信息！"
+//     }
+//   }
+  
+  
+//   $scope.getcode=function(veriusername){
+//     var operation=Storage.get('setPasswordState');
+//     var sendSMS = function(){  
+//       userservice.sendSMS(veriusername,'verification').then(function(data){
+//         loading.loadingBarFinish($scope);
+//         $scope.logStatus='您的验证码已发送';
+//         unablebutton();
+//       },function(data){
+//         loading.loadingBarFinish($scope);
+//         if(data.data==null && data.status==0){
+//           $scope.logStatus='连接超时！';
+//           return;          
+//         }
+//         $scope.logStatus=data.statusText;
+//       }) 
+//     }; 
+//     var unablebutton = function(){      
+//     //验证码BUTTON效果
+//       $scope.isable=true;
+//       $scope.veritext="180S再次发送"; 
+//       var time = 179;
+//       var timer;
+//       timer = $interval(function(){
+//         if(time==0){
+//           $interval.cancel(timer);
+//           timer=undefined;        
+//           $scope.veritext="获取验证码";       
+//           $scope.isable=false;
+//         }else{
+//           $scope.veritext=time+"S再次发送";
+//           time--;
+//         }
+//       },1000);
+//     }
+//     var promise=userservice.UID('PhoneNo',veriusername);
+//     if(promise==7){
+//       $scope.logStatus='手机号验证失败！';
+//       return;
+//     }
+//     loading.loadingBarStart($scope);
+//     promise.then(function(data){
+//       if(data.result!=null){
+//         if(operation=='reset'){
+//           Storage.set('UID',data.result);
+//           sendSMS();//发送验证码
+//         }else{
+//           loading.loadingBarFinish($scope);
+//           $scope.logStatus='该账户已进行过注册！';
+//         }
+//       }else{
+//         if(operation=='reset'){
+//           loading.loadingBarFinish($scope);
+//           Storage.set('UID','');
+//           $scope.logStatus="用户不存在";
+//         }else{
+//           sendSMS();
+//         }
+//       }
+//     },function(data){
+//       loading.loadingBarFinish($scope);
+//       if(data.data==null && data.status==0){
+//         $scope.logStatus='连接超时！';
+//         return;          
+//       }
+//       $scope.logStatus=data.statusText;
+//     })
+
+//   }
+// }])
+.controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage', 'userservice','loading' , function($scope, $state,$interval,$rootScope,Storage,userservice,loading) {
   $scope.barwidth="width:0%";
   var setPassState=Storage.get('setPasswordState');
   $scope.veriusername="" 
@@ -310,45 +408,56 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
   $scope.veritext="获取验证码";
   $scope.isable=false;
   $scope.gotoReset = function(veriusername,verifyCode){
-    if(veriusername!=0 && verifyCode!=0){
+    $scope.logStatus='';
+    if(veriusername!=0 && verifyCode!=0 && veriusername!='' && verifyCode!=''){
+      loading.loadingBarStart($scope);
       $rootScope.userId=veriusername;
-      var promise=userservice.checkverification(veriusername,'verification',verifyCode);
-      promise.then(function(data){
+      userservice.checkverification(veriusername,'verification',verifyCode)
+      .then(function(data){
+        loading.loadingBarFinish($scope);
         if(data.result==1){
-          $scope.logStatus='验证成功';
+          $scope.logStatus='验证成功！';
           $state.go('setpassword');
-        }
+        }else{
+          $scope.logStatus='验证码错误！';
+        }        
       },function(data){
+        loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
           $scope.logStatus='连接超时！';
           return;          
         }
-        $scope.logStatus=data.statusText;
+        $scope.logStatus='验证失败！';
     });
     }else{
       $scope.logStatus="请输入完整信息！"
     }
   }
-  
-  
+   
   $scope.getcode=function(veriusername){
+    $scope.logStatus='';
     var operation=Storage.get('setPasswordState');
     var sendSMS = function(){  
-      userservice.sendSMS(veriusername,'verification').then(function(data){
+      userservice.sendSMS(veriusername,'verification')
+      .then(function(data){
         loading.loadingBarFinish($scope);
-        $scope.logStatus='您的验证码已发送';
-        unablebutton();
+        unablebutton();        
+        if(data.result[0]=='您'){
+          $scope.logStatus="您的验证码已发送，重新获取请稍后";
+        }else{
+          $scope.logStatus='验证码发送成功！';
+        }
       },function(data){
         loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
           $scope.logStatus='连接超时！';
           return;          
         }
-        $scope.logStatus=data.statusText;
+        $scope.logStatus='验证码发送失败！';
       }) 
     }; 
     var unablebutton = function(){      
-    //验证码BUTTON效果
+     //验证码BUTTON效果
       $scope.isable=true;
       $scope.veritext="180S再次发送"; 
       var time = 179;
@@ -377,8 +486,25 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
           Storage.set('UID',data.result);
           sendSMS();//发送验证码
         }else{
-          loading.loadingBarFinish($scope);
-          $scope.logStatus='该账户已进行过注册！';
+          userservice.Roles(data.result).then(function(data){
+            loading.loadingBarFinish($scope);
+            var flag=0;
+            for(var i in data){
+              if(data[i]=='Patient'){
+                $scope.logStatus='该账户已进行过注册！';
+                flag=1;
+                break;
+              }
+            }
+            if(flag==0){
+              sendSMS();
+            }
+          },function(){
+            loading.loadingBarFinish($scope);
+            $scope.logStatus='网络出错了，请再次发送';
+          })
+          // loading.loadingBarFinish($scope);
+          // $scope.logStatus='该账户已进行过注册！';
         }
       }else{
         if(operation=='reset'){
@@ -392,12 +518,11 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
     },function(data){
       loading.loadingBarFinish($scope);
       if(data.data==null && data.status==0){
-        $scope.logStatus='连接超时！';
-        return;          
+          $scope.logStatus='连接超时！';
+          return;          
       }
-      $scope.logStatus=data.statusText;
+      $scope.logStatus='网络出错了，请再次发送';
     })
-
   }
 }])
 
@@ -1309,35 +1434,45 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 
         //从restful或者jon文件获取数据
         PlanInfo.PlanInfoChart(UserId, PlanNo, StartDate, EndDate, ItemType, ItemCode).then(function(data) {  
-            createStockChart(data); //画图
-            setTimeout(function(){
-              chart.panels[1].addListener("clickGraphItem",showDetailInfo); 
-             // $ionicLoading.hide();
-              chart.panels[0].valueAxes[0].guides=Guide; //添加分级guide
-              chart.panels[0].title= title;
-              chart.panels[0].valueAxes[0].minimum=minimum;
-              chart.panels[0].valueAxes[0].maximum=maximum;
-              chart.validateNow();
-            },200); //添加点击事件
+          if((data!=null) && (data!=''))
+              {
+                createStockChart(data); //画图
+                setTimeout(function(){
+                  chart.panels[1].addListener("clickGraphItem",showDetailInfo); 
+                 // $ionicLoading.hide();
+                  chart.panels[0].valueAxes[0].guides=Guide; //添加分级guide
+                  chart.panels[0].title= title;
+                  chart.panels[0].valueAxes[0].minimum=minimum;
+                  chart.panels[0].valueAxes[0].maximum=maximum;
+                  chart.validateNow();
+                },200); //添加点击事件
 
-          //获取该计划下的某体征的初始值和目标值
-            $scope.orignalValue='';
-            $scope.targetValue='';
-            PlanInfo.Target(PlanNo, ItemType, ItemCode).then(function(data) { 
-              //console.log(data);
-                if((data.Origin!=null)&&(data.Value!=null)){
-                   $scope.orignalValue='初始值：'+data.Origin+data.Unit;
-                   $scope.targetValue='目标值：'+data.Value+data.Unit;
-                 }
-                 else
-                 {
-                    $scope.orignalValue='';
-                    $scope.targetValue='';
-                 }
-              }, function(data) {}     
-            );
+              //获取该计划下的某体征的初始值和目标值
+                $scope.orignalValue='';
+                $scope.targetValue='';
+                PlanInfo.Target(PlanNo, ItemType, ItemCode).then(function(data) { 
+                  //console.log(data);
+                    if((data.Origin!=null)&&(data.Value!=null)){
+                       $scope.orignalValue='初始值：'+data.Origin+data.Unit;
+                       $scope.targetValue='目标值：'+data.Value+data.Unit;
+                     }
+                     else
+                     {
+                        $scope.orignalValue='';
+                        $scope.targetValue='';
+                     }
 
+                  }, function(data) {}     
+               ); //PlanInfo.Target end
 
+           }
+           else
+           {
+              $scope.orignalValue='';
+              $scope.targetValue='';
+              $scope.showGraph=false;
+              $scope.graphText="暂时没有数据，快上传您的数据吧";
+           }
               }, function(data) {}     
           );
 
@@ -2160,11 +2295,8 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 
 //----------------侧边栏----------------
 //个人信息
-//个人信息
 .controller('personalInfocontroller',['$scope','$ionicHistory','$state','$ionicPopup','$resource','Storage','Data','CONFIG','$ionicLoading','$ionicPopover','Camera',
-   function($scope, $ionicHistory, $state, $ionicPopup, $resource, Storage, Data,CONFIG, $ionicLoading, $ionicPopover, Camera) {        
-      
-      
+   function($scope, $ionicHistory, $state, $ionicPopup, $resource, Storage, Data,CONFIG, $ionicLoading, $ionicPopover, Camera) {             
       // 返回键
       $scope.nvGoback = function() {
         $ionicHistory.goBack();
@@ -2242,7 +2374,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
                                 $scope.imgurl = "img/DefaultAvatar.jpg";
                               } 
                                 else{
-                                  $scope.imgurl = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile + "/" + UserId + ".jpg";
+                                  $scope.imgurl = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile + "/" + $scope.BasicDtlInfo.PhotoAddress;
                                 };
                           }); // 详细信息读入完成 
           }); // 基本信息读入完成
@@ -2482,14 +2614,16 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
           // console.log(data);
           $scope.imgURI = data; 
           // 存入服务器
-          Camera.uploadPicture($scope.imgURI).then(function(r){
-           // if (r.result == "上传成功") {
+          var temp_photoaddress = UserId + "_" + new Date().getTime() + ".jpg";
+          Camera.uploadPicture($scope.imgURI, temp_photoaddress).then(function(r){
               // 将图片的名字（UserId）插入详细信息中的PhotoAddress
+              // 给照片的名字加上时间戳
+              console.log(temp_photoaddress);
               Data.Users.PostPatBasicInfoDetail([{Patient: UserId,
                                                   CategoryCode: "Contact",
                                                   ItemCode: "Contact001_4",
                                                   ItemSeq: "1",
-                                                  Value: UserId+'.jpg',
+                                                  Value: temp_photoaddress,
                                                   Description: "",
                                                   SortNo:"1",
                                                   revUserId: UserId,
@@ -2499,12 +2633,10 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
                                                 }],
                                                 function (success, headers) {
                                                   if (success.result="数据插入成功") { 
-                                                    $scope.imgurl = "img/DefaultAvatar.jpg";
-                                                    setTimeout(init_personalInfo(),100); 
-                                                    // init_personalInfo();
+                                                    // Camera.downloadPicture();
+                                                    init_personalInfo();
                                                   };
                                                 });
-            //};
           }) // 上传照片结束
         }, function(err) {
           // console.err(err);
@@ -2522,15 +2654,18 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
           // data里存的是图像的地址
           // console.log(data);
           $scope.imgURI = data;
+          var temp_photoaddress = UserId + "_" + new Date().getTime() + ".jpg";
           // 存入服务器
-          Camera.uploadPicture($scope.imgURI).then(function(r){
-            //if (r.result == "上传成功") {
+          Camera.uploadPicture($scope.imgURI, temp_photoaddress).then(function(r){
               // 将图片的名字（UserId）插入详细信息中的PhotoAddress
+              
+              // 给照片的名字加上时间戳
+              console.log(temp_photoaddress);
               Data.Users.PostPatBasicInfoDetail([{Patient: UserId,
                                                   CategoryCode: "Contact",
                                                   ItemCode: "Contact001_4",
                                                   ItemSeq: "1",
-                                                  Value: UserId+".jpg",
+                                                  Value: temp_photoaddress,
                                                   Description: "",
                                                   SortNo:"1",
                                                   revUserId: UserId,
@@ -2539,12 +2674,11 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
                                                   DeviceType: "11"
                                                 }],
                                                 function (success, headers) {
-                                                  if (success.result="数据插入成功") {
-                                                    $scope.imgurl = "img/DefaultAvatar.jpg";
-                                                    setTimeout(init_personalInfo(),100);
+                                                  if (success.result="数据插入成功") { 
+                                                    // Camera.downloadPicture();
+                                                    init_personalInfo();
                                                   };
                                                 });
-            //};
           }) // 上传照片结束 
         }, function(err) {
             // console.err(err);
