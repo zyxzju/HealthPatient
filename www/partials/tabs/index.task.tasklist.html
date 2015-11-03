@@ -13,6 +13,11 @@
             on-refresh="doRefresh()">
         </ion-refresher>
         <ion-list>
+            <ion-item ng-if=(task.Code=='') class="item item-thumbnail-left item-icon-right">
+                <img ng-src="img/icon/TF0000.png">
+                <h2>暂时没有要完成的任务
+                <br/><h2><a style='text-decoration:none;' ng-click="showmore('{{task.Instruction}}')">请联系健康专员建立计划</a></h2>
+            </ion-item>
             <ion-item href="#/tab/task/{{task.Code}}" ng-repeat="task in tasklist" class="item item-thumbnail-left item-icon-right">
             <!-- <ion-item href="" ng-repeat="task in tasklist" class="item-thumbnail-left" ng-click='openModal()'> -->
                 <img ng-src="img/icon/{{task.Code}}.png">

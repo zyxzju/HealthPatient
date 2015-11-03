@@ -506,6 +506,14 @@ angular.module('zjubme.services', ['ionic','ngResource'])
         if(key==n)r=value;
       })
       return r;
+    },
+    refreshstatus:function(status){
+       if(status==null)
+      {
+        return angular.fromJson(window.localStorage['refreshstatus']);
+      }else {
+        window.localStorage['refreshstatus'] = angular.toJson(status);
+      }
     }
   }
 })
