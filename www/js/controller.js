@@ -418,7 +418,7 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
           Status:'3'
         }
         PlanInfo.GetExecutingPlan(get).then(function(s){
-          console.log(s[0]);
+          // console.log(s[0]);
           extraInfo.PlanNo(s[0])
         },function(e){
           console.log(e);
@@ -558,8 +558,8 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 }])
 
 //任务详细
-.controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage','$ionicPopup',
-function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage,$ionicPopup) {
+.controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage','$ionicLoading', '$ionicPopup',
+function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage,$ionicLoading, $ionicPopup) {
   var data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//
   var detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//extraInfo.PlanNo().PlanNo
 
@@ -602,6 +602,13 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     getlist();
+    var refreshstatus='刷新失败'
+    extraInfo.refreshstatus()=='刷新成功'?refreshstatus='刷新成功':refreshstatus;
+    $ionicLoading.show({
+      template: refreshstatus,
+      noBackdrop: true,
+      duration: 700
+    });
   }
   var getlist = function()
   {
@@ -611,9 +618,11 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
       $scope.taskdetaillist = TaskInfo.insertstate(s);
       var i=0;
       if(s.length)getdetail(i);
+      extraInfo.refreshstatus('刷新成功');
     },function(e){
       console.log(e);
       $scope.$broadcast('scroll.refreshComplete');
+      extraInfo.refreshstatus('刷新失败');
     });
   }
   var getdetail = function(index)
@@ -655,8 +664,10 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
 }])
 
 //任务列表
-.controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage',function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage) {
+.controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage','$ionicLoading',
+  function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage,$ionicLoading) {
   //extraInfo.PlanNo().PlanNo'PLAN20151029'
+  $scope.getexecutingplan();
   var data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
   ionic.DomUtil.ready(function(){
     get();
@@ -665,6 +676,13 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     $scope.getexecutingplan();
     data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     get();
+    var refreshstatus='刷新失败'
+    extraInfo.refreshstatus()=='刷新成功'?refreshstatus='刷新成功':refreshstatus;
+    $ionicLoading.show({
+      template: refreshstatus,
+      noBackdrop: true,
+      duration: 700
+    });
   }
   var get = function()
   {
@@ -672,9 +690,11 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
       console.log(s);
       $scope.$broadcast('scroll.refreshComplete');
       $scope.tasklist = s;
+      extraInfo.refreshstatus('刷新成功');
     },function(e){
       console.log(e);
       $scope.$broadcast('scroll.refreshComplete');
+      extraInfo.refreshstatus('刷新失败');
     });
     // $http.get('testdata/tasklist.json').success(function(data){
     //  $scope.tasklist = TaskInfo.insertstate(data);
