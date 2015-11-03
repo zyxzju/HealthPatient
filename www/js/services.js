@@ -3,7 +3,7 @@ angular.module('zjubme.services', ['ionic','ngResource'])
 // 客户端配置
 .constant('CONFIG', {
   baseUrl: 'http://121.43.107.106:9000/Api/v1/',
-  wsServerIP : "ws://" + "10.12.43.61" + ":4141",
+  wsServerIP : "ws://" + "121.43.107.106" + ":4141",
   role: "Patient",
   //revUserId: "",
   //TerminalName: "",
