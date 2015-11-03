@@ -1627,10 +1627,10 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 .controller('recordListcontroller', ['$scope', '$cordovaDatePicker','$http','VitalInfo','$ionicLoading','Storage',
     function($scope, $cordovaDatePicker,$http, VitalInfo,$ionicLoading, Storage) {
     
+     $scope.show_recordList = false;
      var UserId=Storage.get("UID");
      var setstate;
      var myDate = new Date();
-     console.log(myDate);
      var dd=myDate.getDate();
      if(dd<=9)dd="0"+dd;
      var db=myDate.getDate()-1;
@@ -1639,11 +1639,16 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
      if(mm<=9)mm="0"+mm;
      var yyyy=myDate.getFullYear();
      var EndDate=yyyy.toString()+mm.toString()+dd.toString();
-     console.log(EndDate);
+     //console.log(EndDate);
      var StartDate =yyyy.toString()+mm.toString()+db.toString();
-     var VitalSigns = function (UserId,StartDate,EndDate) {
+         Storage.set("StartDate",StartDate );
+         StartDate =Storage.get("StartDate");
+         Storage.set("EndDate",EndDate );
+         EndDate =Storage.get("EndDate");
+
+      var VitalSigns = function (UserId,StartDate,EndDate) {
         var promise = VitalInfo.VitalSigns(UserId,StartDate,EndDate);  
-        promise.then(function(data) {  // 调用承诺API获取数据 .resolve  
+        promise.then(function(data) {  // 调用承诺API获取数据 .resolve
              $scope.SignDetailByDs = data;
              console.log(data);
              if($scope.SignDetailByDs.StartDate==null){
@@ -1651,11 +1656,17 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
              } 
              if($scope.SignDetailByDs.EndDate==null){
                $scope.EndDate=yyyy+'-'+mm+'-'+dd;
-             }   
+             }
+          if((data !="")&&(data !=null)){
+             $scope.show_recordList = false;   
+           } 
+           else{
+            $scope.show_recordList = true ;
+           } 
           }, function(data) {  // 处理错误 .reject  
-            console.log(data);
-          });
-        };
+           
+          });//promise end
+        }
 
         VitalSigns(UserId,StartDate,EndDate); //运行函数
          // 设置日期
@@ -1666,19 +1677,21 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
         $scope.setEnd = function(){
           setstate=1;
         } 
-        $scope.SignDetailByDs={};
         var datePickerCallback = function (val) {
           if (typeof(val) === 'undefined') {
             console.log('No date selected');
           } else {
             $scope.datepickerObject.inputDate=val;
             var dd=val.getDate();
+            if(dd<=9)dd="0"+dd;
             var mm=val.getMonth()+1;
+            if(mm<=9)mm="0"+mm;
             var yyyy=val.getFullYear();
             var date=yyyy.toString()+'-'+mm.toString()+'-'+dd.toString();
             var dateuser=parseInt(yyyy.toString()+mm.toString()+dd.toString());
            if(setstate==0){
             $scope.StartDate=date;
+             console.log($scope.StartDate);
              Storage.set("StartDate",dateuser )
              StartDate =Storage.get("StartDate")
              }else if(setstate==1){
@@ -1687,6 +1700,13 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
               if(EndDate>=StartDate)
               {
              $scope.EndDate=date;
+              }
+              else{
+                $scope.EndDate=date;
+                $ionicLoading.show({
+                 template: '结束日期不能小于开始日期',
+                 duration:1000
+                });
               }
              }
           }
@@ -1717,21 +1737,25 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
           }
         };  
          $scope.doRefresh = function() {
+
          getlist();
         }
         var getlist = function()
-      {
+       {
+            VitalInfo.VitalSigns(UserId,StartDate,EndDate).then(function(data){
+            $scope.$broadcast('scroll.refreshComplete');
+            $scope.SignDetailByDs = data;
+            if((data !="")&&(data !=null)){
+                 $scope.show_recordList = false;   
+               } 
+               else{
+                $scope.show_recordList = true ;
+               } 
 
-       VitalInfo.VitalSigns(UserId,StartDate,EndDate).then(function(data){
-        // console.log(data);
-        $scope.$broadcast('scroll.refreshComplete');
-        $scope.SignDetailByDs = data;
-
-        },function(e){
-      
-         $scope.$broadcast('scroll.refreshComplete');
-        });
-   
+          },function(e){
+            $scope.$broadcast('scroll.refreshComplete');
+          });
+       
      }
       //监视进入页面
       $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded

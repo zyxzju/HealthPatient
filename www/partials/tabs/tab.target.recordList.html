@@ -1,5 +1,8 @@
 
 <ion-view view-title="记录" >
+
+
+    <ion-content class="padding">
   <style>
 .header .col {
   background-color:lightgrey;
@@ -21,9 +24,6 @@
   padding:0;
 }
   </style>
-
-    <ion-content class="padding">
-
   <div class="button-bar bar-light">
           <a class="button " href="#/tab/targetGraph" >依从率图</a>
           <a class="button button-energized" href="#/tab/recordList">体征表</a>
@@ -53,8 +53,8 @@
              </ionic-datepicker>
          </div>
         </div>
-        <br>
-      <div class="row header">
+     <br>
+      <div class="row header" >
           <div class="col">日期</div>
           <div class="col">时间</div>
           <div class="col">体征</div>
@@ -68,7 +68,9 @@
           <div class="col">{{Sign.Value}}</div>
           <div class="col">{{Sign.Unit}}</div>
         </div>
-
+     <div ng-if=show_recordList >
+        <p style="color:#97CBFF;text-align:center;margin-top:20px;">此时间段没有数据！</p>
+     </div>
         <ion-refresher
             pulling-text="下拉刷新。。。"
             spinner='ripple'
