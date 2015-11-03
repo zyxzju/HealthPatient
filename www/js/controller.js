@@ -302,7 +302,105 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 }])
 
 //获取验证码  
-.controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage', 'userservice','loading', function($scope, $state,$interval,$rootScope,Storage,userservice,loading) {
+// .controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage', 'userservice','loading', function($scope, $state,$interval,$rootScope,Storage,userservice,loading) {
+//   $scope.barwidth="width:0%";
+//   var setPassState=Storage.get('setPasswordState');
+//   $scope.veriusername="" 
+//   $scope.verifyCode="";
+//   $scope.veritext="获取验证码";
+//   $scope.isable=false;
+//   $scope.gotoReset = function(veriusername,verifyCode){
+//     if(veriusername!=0 && verifyCode!=0){
+//       $rootScope.userId=veriusername;
+//       var promise=userservice.checkverification(veriusername,'verification',verifyCode);
+//       promise.then(function(data){
+//         if(data.result==1){
+//           $scope.logStatus='验证成功';
+//           $state.go('setpassword');
+//         }
+//       },function(data){
+//         if(data.data==null && data.status==0){
+//           $scope.logStatus='连接超时！';
+//           return;          
+//         }
+//         $scope.logStatus=data.statusText;
+//     });
+//     }else{
+//       $scope.logStatus="请输入完整信息！"
+//     }
+//   }
+  
+  
+//   $scope.getcode=function(veriusername){
+//     var operation=Storage.get('setPasswordState');
+//     var sendSMS = function(){  
+//       userservice.sendSMS(veriusername,'verification').then(function(data){
+//         loading.loadingBarFinish($scope);
+//         $scope.logStatus='您的验证码已发送';
+//         unablebutton();
+//       },function(data){
+//         loading.loadingBarFinish($scope);
+//         if(data.data==null && data.status==0){
+//           $scope.logStatus='连接超时！';
+//           return;          
+//         }
+//         $scope.logStatus=data.statusText;
+//       }) 
+//     }; 
+//     var unablebutton = function(){      
+//     //验证码BUTTON效果
+//       $scope.isable=true;
+//       $scope.veritext="180S再次发送"; 
+//       var time = 179;
+//       var timer;
+//       timer = $interval(function(){
+//         if(time==0){
+//           $interval.cancel(timer);
+//           timer=undefined;        
+//           $scope.veritext="获取验证码";       
+//           $scope.isable=false;
+//         }else{
+//           $scope.veritext=time+"S再次发送";
+//           time--;
+//         }
+//       },1000);
+//     }
+//     var promise=userservice.UID('PhoneNo',veriusername);
+//     if(promise==7){
+//       $scope.logStatus='手机号验证失败！';
+//       return;
+//     }
+//     loading.loadingBarStart($scope);
+//     promise.then(function(data){
+//       if(data.result!=null){
+//         if(operation=='reset'){
+//           Storage.set('UID',data.result);
+//           sendSMS();//发送验证码
+//         }else{
+//           loading.loadingBarFinish($scope);
+//           $scope.logStatus='该账户已进行过注册！';
+//         }
+//       }else{
+//         if(operation=='reset'){
+//           loading.loadingBarFinish($scope);
+//           Storage.set('UID','');
+//           $scope.logStatus="用户不存在";
+//         }else{
+//           sendSMS();
+//         }
+//       }
+//     },function(data){
+//       loading.loadingBarFinish($scope);
+//       if(data.data==null && data.status==0){
+//         $scope.logStatus='连接超时！';
+//         return;          
+//       }
+//       $scope.logStatus=data.statusText;
+//     })
+
+//   }
+// }])
+.controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage', 'userservice','loading' , function($scope, $state,$interval,$rootScope,Storage,userservice,loading) {
   $scope.barwidth="width:0%";
   var setPassState=Storage.get('setPasswordState');
   $scope.veriusername="" 
@@ -310,45 +408,56 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
   $scope.veritext="获取验证码";
   $scope.isable=false;
   $scope.gotoReset = function(veriusername,verifyCode){
-    if(veriusername!=0 && verifyCode!=0){
+    $scope.logStatus='';
+    if(veriusername!=0 && verifyCode!=0 && veriusername!='' && verifyCode!=''){
+      loading.loadingBarStart($scope);
       $rootScope.userId=veriusername;
-      var promise=userservice.checkverification(veriusername,'verification',verifyCode);
-      promise.then(function(data){
+      userservice.checkverification(veriusername,'verification',verifyCode)
+      .then(function(data){
+        loading.loadingBarFinish($scope);
         if(data.result==1){
-          $scope.logStatus='验证成功';
+          $scope.logStatus='验证成功！';
           $state.go('setpassword');
-        }
+        }else{
+          $scope.logStatus='验证码错误！';
+        }        
       },function(data){
+        loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
           $scope.logStatus='连接超时！';
           return;          
         }
-        $scope.logStatus=data.statusText;
+        $scope.logStatus='验证失败！';
     });
     }else{
       $scope.logStatus="请输入完整信息！"
     }
   }
-  
-  
+   
   $scope.getcode=function(veriusername){
+    $scope.logStatus='';
     var operation=Storage.get('setPasswordState');
     var sendSMS = function(){  
-      userservice.sendSMS(veriusername,'verification').then(function(data){
+      userservice.sendSMS(veriusername,'verification')
+      .then(function(data){
         loading.loadingBarFinish($scope);
-        $scope.logStatus='您的验证码已发送';
-        unablebutton();
+        unablebutton();        
+        if(data.result[0]=='您'){
+          $scope.logStatus="您的验证码已发送，重新获取请稍后";
+        }else{
+          $scope.logStatus='验证码发送成功！';
+        }
       },function(data){
         loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
           $scope.logStatus='连接超时！';
           return;          
         }
-        $scope.logStatus=data.statusText;
+        $scope.logStatus='验证码发送失败！';
       }) 
     }; 
     var unablebutton = function(){      
-    //验证码BUTTON效果
+     //验证码BUTTON效果
       $scope.isable=true;
       $scope.veritext="180S再次发送"; 
       var time = 179;
@@ -377,8 +486,25 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
           Storage.set('UID',data.result);
           sendSMS();//发送验证码
         }else{
-          loading.loadingBarFinish($scope);
-          $scope.logStatus='该账户已进行过注册！';
+          userservice.Roles(data.result).then(function(data){
+            loading.loadingBarFinish($scope);
+            var flag=0;
+            for(var i in data){
+              if(data[i]=='Patient'){
+                $scope.logStatus='该账户已进行过注册！';
+                flag=1;
+                break;
+              }
+            }
+            if(flag==0){
+              sendSMS();
+            }
+          },function(){
+            loading.loadingBarFinish($scope);
+            $scope.logStatus='网络出错了，请再次发送';
+          })
+          // loading.loadingBarFinish($scope);
+          // $scope.logStatus='该账户已进行过注册！';
         }
       }else{
         if(operation=='reset'){
@@ -392,12 +518,11 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
     },function(data){
       loading.loadingBarFinish($scope);
       if(data.data==null && data.status==0){
-        $scope.logStatus='连接超时！';
-        return;          
+          $scope.logStatus='连接超时！';
+          return;          
       }
-      $scope.logStatus=data.statusText;
+      $scope.logStatus='网络出错了，请再次发送';
     })
-
   }
 }])
 
@@ -418,7 +543,7 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
           Status:'3'
         }
         PlanInfo.GetExecutingPlan(get).then(function(s){
-          console.log(s[0]);
+          // console.log(s[0]);
           extraInfo.PlanNo(s[0])
         },function(e){
           console.log(e);
@@ -558,8 +683,8 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 }])
 
 //任务详细
-.controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage','$ionicPopup',
-function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage,$ionicPopup) {
+.controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage','$ionicLoading', '$ionicPopup',
+function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage,$ionicLoading, $ionicPopup) {
   var data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//
   var detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//extraInfo.PlanNo().PlanNo
 
@@ -602,6 +727,13 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     getlist();
+    var refreshstatus='刷新失败'
+    extraInfo.refreshstatus()=='刷新成功'?refreshstatus='刷新成功':refreshstatus;
+    $ionicLoading.show({
+      template: refreshstatus,
+      noBackdrop: true,
+      duration: 700
+    });
   }
   var getlist = function()
   {
@@ -611,9 +743,11 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
       $scope.taskdetaillist = TaskInfo.insertstate(s);
       var i=0;
       if(s.length)getdetail(i);
+      extraInfo.refreshstatus('刷新成功');
     },function(e){
       console.log(e);
       $scope.$broadcast('scroll.refreshComplete');
+      extraInfo.refreshstatus('刷新失败');
     });
   }
   var getdetail = function(index)
@@ -655,8 +789,10 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
 }])
 
 //任务列表
-.controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage',function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage) {
+.controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage','$ionicLoading',
+  function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage,$ionicLoading) {
   //extraInfo.PlanNo().PlanNo'PLAN20151029'
+  $scope.getexecutingplan();
   var data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
   ionic.DomUtil.ready(function(){
     get();
@@ -665,6 +801,13 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     $scope.getexecutingplan();
     data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     get();
+    var refreshstatus='刷新失败'
+    extraInfo.refreshstatus()=='刷新成功'?refreshstatus='刷新成功':refreshstatus;
+    $ionicLoading.show({
+      template: refreshstatus,
+      noBackdrop: true,
+      duration: 700
+    });
   }
   var get = function()
   {
@@ -672,9 +815,11 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
       console.log(s);
       $scope.$broadcast('scroll.refreshComplete');
       $scope.tasklist = s;
+      extraInfo.refreshstatus('刷新成功');
     },function(e){
       console.log(e);
       $scope.$broadcast('scroll.refreshComplete');
+      extraInfo.refreshstatus('刷新失败');
     });
     // $http.get('testdata/tasklist.json').success(function(data){
     //  $scope.tasklist = TaskInfo.insertstate(data);
@@ -1289,35 +1434,45 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 
         //从restful或者jon文件获取数据
         PlanInfo.PlanInfoChart(UserId, PlanNo, StartDate, EndDate, ItemType, ItemCode).then(function(data) {  
-            createStockChart(data); //画图
-            setTimeout(function(){
-              chart.panels[1].addListener("clickGraphItem",showDetailInfo); 
-             // $ionicLoading.hide();
-              chart.panels[0].valueAxes[0].guides=Guide; //添加分级guide
-              chart.panels[0].title= title;
-              chart.panels[0].valueAxes[0].minimum=minimum;
-              chart.panels[0].valueAxes[0].maximum=maximum;
-              chart.validateNow();
-            },200); //添加点击事件
+          if((data!=null) && (data!=''))
+              {
+                createStockChart(data); //画图
+                setTimeout(function(){
+                  chart.panels[1].addListener("clickGraphItem",showDetailInfo); 
+                 // $ionicLoading.hide();
+                  chart.panels[0].valueAxes[0].guides=Guide; //添加分级guide
+                  chart.panels[0].title= title;
+                  chart.panels[0].valueAxes[0].minimum=minimum;
+                  chart.panels[0].valueAxes[0].maximum=maximum;
+                  chart.validateNow();
+                },200); //添加点击事件
 
-          //获取该计划下的某体征的初始值和目标值
-            $scope.orignalValue='';
-            $scope.targetValue='';
-            PlanInfo.Target(PlanNo, ItemType, ItemCode).then(function(data) { 
-              //console.log(data);
-                if((data.Origin!=null)&&(data.Value!=null)){
-                   $scope.orignalValue='初始值：'+data.Origin+data.Unit;
-                   $scope.targetValue='目标值：'+data.Value+data.Unit;
-                 }
-                 else
-                 {
-                    $scope.orignalValue='';
-                    $scope.targetValue='';
-                 }
-              }, function(data) {}     
-            );
+              //获取该计划下的某体征的初始值和目标值
+                $scope.orignalValue='';
+                $scope.targetValue='';
+                PlanInfo.Target(PlanNo, ItemType, ItemCode).then(function(data) { 
+                  //console.log(data);
+                    if((data.Origin!=null)&&(data.Value!=null)){
+                       $scope.orignalValue='初始值：'+data.Origin+data.Unit;
+                       $scope.targetValue='目标值：'+data.Value+data.Unit;
+                     }
+                     else
+                     {
+                        $scope.orignalValue='';
+                        $scope.targetValue='';
+                     }
 
+                  }, function(data) {}     
+               ); //PlanInfo.Target end
 
+           }
+           else
+           {
+              $scope.orignalValue='';
+              $scope.targetValue='';
+              $scope.showGraph=false;
+              $scope.graphText="暂时没有数据，快上传您的数据吧";
+           }
               }, function(data) {}     
           );
 
@@ -1627,10 +1782,10 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 .controller('recordListcontroller', ['$scope', '$cordovaDatePicker','$http','VitalInfo','$ionicLoading','Storage',
     function($scope, $cordovaDatePicker,$http, VitalInfo,$ionicLoading, Storage) {
     
+     $scope.show_recordList = false;
      var UserId=Storage.get("UID");
      var setstate;
      var myDate = new Date();
-     console.log(myDate);
      var dd=myDate.getDate();
      if(dd<=9)dd="0"+dd;
      var db=myDate.getDate()-1;
@@ -1639,11 +1794,16 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
      if(mm<=9)mm="0"+mm;
      var yyyy=myDate.getFullYear();
      var EndDate=yyyy.toString()+mm.toString()+dd.toString();
-     console.log(EndDate);
+     //console.log(EndDate);
      var StartDate =yyyy.toString()+mm.toString()+db.toString();
-     var VitalSigns = function (UserId,StartDate,EndDate) {
+         Storage.set("StartDate",StartDate );
+         StartDate =Storage.get("StartDate");
+         Storage.set("EndDate",EndDate );
+         EndDate =Storage.get("EndDate");
+
+      var VitalSigns = function (UserId,StartDate,EndDate) {
         var promise = VitalInfo.VitalSigns(UserId,StartDate,EndDate);  
-        promise.then(function(data) {  // 调用承诺API获取数据 .resolve  
+        promise.then(function(data) {  // 调用承诺API获取数据 .resolve
              $scope.SignDetailByDs = data;
              console.log(data);
              if($scope.SignDetailByDs.StartDate==null){
@@ -1651,11 +1811,17 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
              } 
              if($scope.SignDetailByDs.EndDate==null){
                $scope.EndDate=yyyy+'-'+mm+'-'+dd;
-             }   
+             }
+          if((data !="")&&(data !=null)){
+             $scope.show_recordList = false;   
+           } 
+           else{
+            $scope.show_recordList = true ;
+           } 
           }, function(data) {  // 处理错误 .reject  
-            console.log(data);
-          });
-        };
+           
+          });//promise end
+        }
 
         VitalSigns(UserId,StartDate,EndDate); //运行函数
          // 设置日期
@@ -1666,19 +1832,21 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
         $scope.setEnd = function(){
           setstate=1;
         } 
-        $scope.SignDetailByDs={};
         var datePickerCallback = function (val) {
           if (typeof(val) === 'undefined') {
             console.log('No date selected');
           } else {
             $scope.datepickerObject.inputDate=val;
             var dd=val.getDate();
+            if(dd<=9)dd="0"+dd;
             var mm=val.getMonth()+1;
+            if(mm<=9)mm="0"+mm;
             var yyyy=val.getFullYear();
             var date=yyyy.toString()+'-'+mm.toString()+'-'+dd.toString();
             var dateuser=parseInt(yyyy.toString()+mm.toString()+dd.toString());
            if(setstate==0){
             $scope.StartDate=date;
+             console.log($scope.StartDate);
              Storage.set("StartDate",dateuser )
              StartDate =Storage.get("StartDate")
              }else if(setstate==1){
@@ -1687,6 +1855,13 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
               if(EndDate>=StartDate)
               {
              $scope.EndDate=date;
+              }
+              else{
+                $scope.EndDate=date;
+                $ionicLoading.show({
+                 template: '结束日期不能小于开始日期',
+                 duration:1000
+                });
               }
              }
           }
@@ -1717,21 +1892,25 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
           }
         };  
          $scope.doRefresh = function() {
+
          getlist();
         }
         var getlist = function()
-      {
+       {
+            VitalInfo.VitalSigns(UserId,StartDate,EndDate).then(function(data){
+            $scope.$broadcast('scroll.refreshComplete');
+            $scope.SignDetailByDs = data;
+            if((data !="")&&(data !=null)){
+                 $scope.show_recordList = false;   
+               } 
+               else{
+                $scope.show_recordList = true ;
+               } 
 
-       VitalInfo.VitalSigns(UserId,StartDate,EndDate).then(function(data){
-        // console.log(data);
-        $scope.$broadcast('scroll.refreshComplete');
-        $scope.SignDetailByDs = data;
-
-        },function(e){
-      
-         $scope.$broadcast('scroll.refreshComplete');
-        });
-   
+          },function(e){
+            $scope.$broadcast('scroll.refreshComplete');
+          });
+       
      }
       //监视进入页面
       $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
@@ -2140,11 +2319,8 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 
 //----------------侧边栏----------------
 //个人信息
-//个人信息
 .controller('personalInfocontroller',['$scope','$ionicHistory','$state','$ionicPopup','$resource','Storage','Data','CONFIG','$ionicLoading','$ionicPopover','Camera',
-   function($scope, $ionicHistory, $state, $ionicPopup, $resource, Storage, Data,CONFIG, $ionicLoading, $ionicPopover, Camera) {        
-      
-      
+   function($scope, $ionicHistory, $state, $ionicPopup, $resource, Storage, Data,CONFIG, $ionicLoading, $ionicPopover, Camera) {             
       // 返回键
       $scope.nvGoback = function() {
         $ionicHistory.goBack();
@@ -2222,7 +2398,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
                                 $scope.imgurl = "img/DefaultAvatar.jpg";
                               } 
                                 else{
-                                  $scope.imgurl = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile + "/" + UserId + ".jpg";
+                                  $scope.imgurl = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile + "/" + $scope.BasicDtlInfo.PhotoAddress;
                                 };
                           }); // 详细信息读入完成 
           }); // 基本信息读入完成
@@ -2462,14 +2638,16 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
           // console.log(data);
           $scope.imgURI = data; 
           // 存入服务器
-          Camera.uploadPicture($scope.imgURI).then(function(r){
-           // if (r.result == "上传成功") {
+          var temp_photoaddress = UserId + "_" + new Date().getTime() + ".jpg";
+          Camera.uploadPicture($scope.imgURI, temp_photoaddress).then(function(r){
               // 将图片的名字（UserId）插入详细信息中的PhotoAddress
+              // 给照片的名字加上时间戳
+              console.log(temp_photoaddress);
               Data.Users.PostPatBasicInfoDetail([{Patient: UserId,
                                                   CategoryCode: "Contact",
                                                   ItemCode: "Contact001_4",
                                                   ItemSeq: "1",
-                                                  Value: UserId+'.jpg',
+                                                  Value: temp_photoaddress,
                                                   Description: "",
                                                   SortNo:"1",
                                                   revUserId: UserId,
@@ -2479,12 +2657,10 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
                                                 }],
                                                 function (success, headers) {
                                                   if (success.result="数据插入成功") { 
-                                                    $scope.imgurl = "img/DefaultAvatar.jpg";
-                                                    setTimeout(init_personalInfo(),100); 
-                                                    // init_personalInfo();
+                                                    // Camera.downloadPicture();
+                                                    init_personalInfo();
                                                   };
                                                 });
-            //};
           }) // 上传照片结束
         }, function(err) {
           // console.err(err);
@@ -2502,15 +2678,18 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
           // data里存的是图像的地址
           // console.log(data);
           $scope.imgURI = data;
+          var temp_photoaddress = UserId + "_" + new Date().getTime() + ".jpg";
           // 存入服务器
-          Camera.uploadPicture($scope.imgURI).then(function(r){
-            //if (r.result == "上传成功") {
+          Camera.uploadPicture($scope.imgURI, temp_photoaddress).then(function(r){
               // 将图片的名字（UserId）插入详细信息中的PhotoAddress
+              
+              // 给照片的名字加上时间戳
+              console.log(temp_photoaddress);
               Data.Users.PostPatBasicInfoDetail([{Patient: UserId,
                                                   CategoryCode: "Contact",
                                                   ItemCode: "Contact001_4",
                                                   ItemSeq: "1",
-                                                  Value: UserId+".jpg",
+                                                  Value: temp_photoaddress,
                                                   Description: "",
                                                   SortNo:"1",
                                                   revUserId: UserId,
@@ -2519,12 +2698,11 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
                                                   DeviceType: "11"
                                                 }],
                                                 function (success, headers) {
-                                                  if (success.result="数据插入成功") {
-                                                    $scope.imgurl = "img/DefaultAvatar.jpg";
-                                                    setTimeout(init_personalInfo(),100);
+                                                  if (success.result="数据插入成功") { 
+                                                    // Camera.downloadPicture();
+                                                    init_personalInfo();
                                                   };
                                                 });
-            //};
           }) // 上传照片结束 
         }, function(err) {
             // console.err(err);

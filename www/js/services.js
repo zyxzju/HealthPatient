@@ -3,7 +3,7 @@ angular.module('zjubme.services', ['ionic','ngResource'])
 // 客户端配置
 .constant('CONFIG', {
   baseUrl: 'http://121.43.107.106:9000/Api/v1/',
-  wsServerIP : "ws://" + "10.12.43.61" + ":4141",
+  wsServerIP : "ws://" + "121.43.107.106" + ":4141",
   role: "Patient",
   //revUserId: "",
   //TerminalName: "",
@@ -82,6 +82,7 @@ angular.module('zjubme.services', ['ionic','ngResource'])
         Verification:{method:'POST',params:{route:'Verification'},timeout:10000},
         UID:{method:'GET',params:{route:'UID',Type:'@Type',Name:'@Name'},timeout:10000},
         Activition:{method:'POST',params:{route:'Activition'},timeout:10000},
+        Roles:{method:'GET',params:{route:'Roles',UserId:'@UserId'},timeout:10000,isArray:true},
         GetHealthCoachListByPatient: {method:'Get', isArray: true, params:{route: 'GetHealthCoachListByPatient'},timeout: 10000},
         GetPatBasicInfo: {method:'GET', params:{route:'@UserId'}, timeout:10000},
         GetPatientDetailInfo: {method:'GET', params:{route:'@UserId'}, timeout:10000},
@@ -224,6 +225,17 @@ angular.module('zjubme.services', ['ionic','ngResource'])
 .factory('userservice',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){  //XJZ
   var serve = {};
     var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+    
+    serve.Roles = function (_UserId){
+      var deferred = $q.defer();
+      Data.Users.Roles({UserId:_UserId},
+        function(data){
+          deferred.resolve(data);
+        },function(err){
+          deferred.reject(err);
+        });
+      return deferred.promise;
+    }
 
     serve.userLogOn = function(_PwType,_username,_password,_role){
         if(!phoneReg.test(_username)){
@@ -506,6 +518,14 @@ angular.module('zjubme.services', ['ionic','ngResource'])
         if(key==n)r=value;
       })
       return r;
+    },
+    refreshstatus:function(status){
+       if(status==null)
+      {
+        return angular.fromJson(window.localStorage['refreshstatus']);
+      }else {
+        window.localStorage['refreshstatus'] = angular.toJson(status);
+      }
     }
   }
 })
@@ -898,14 +918,14 @@ angular.module('zjubme.services', ['ionic','ngResource'])
       return q.promise; //return a promise      
     },
 
-    uploadPicture : function(imgURI){
+    uploadPicture : function(imgURI, temp_photoaddress){
         // document.addEventListener('deviceready', onReadyFunction,false);
         // function onReadyFunction(){
           var uri = encodeURI(CONFIG.ImageAddressIP + "/upload.php");
           var photoname = Storage.get("UID"); // 取出病人的UID作为照片的名字
           var options = {
             fileKey : "file",
-            fileName : photoname + ".jpg",
+            fileName : temp_photoaddress,
             chunkedMode : true,
             mimeType : "image/jpeg"
           };
