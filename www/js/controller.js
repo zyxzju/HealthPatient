@@ -1781,7 +1781,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 //目标-列表 赵艳霞
 .controller('recordListcontroller', ['$scope', '$cordovaDatePicker','$http','VitalInfo','$ionicLoading','Storage',
     function($scope, $cordovaDatePicker,$http, VitalInfo,$ionicLoading, Storage) {
-    
+     $scope.status="加载更多";
      $scope.show_recordList = false;
      var UserId=Storage.get("UID");
      var setstate;
@@ -1800,13 +1800,12 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
          StartDate =Storage.get("StartDate");
          Storage.set("EndDate",EndDate );
          EndDate =Storage.get("EndDate");
-
       var VitalSigns = function (UserId,StartDate,EndDate) {
-        var promise = VitalInfo.VitalSigns(UserId,StartDate,EndDate);  
-        promise.then(function(data) {  // 调用承诺API获取数据 .resolve
-             $scope.SignDetailByDs = data;
-             console.log(data);
-             if($scope.SignDetailByDs.StartDate==null){
+      var promise = VitalInfo.VitalSigns(UserId,StartDate,EndDate);  
+      promise.then(function(data) {  // 调用承诺API获取数据 .resolve
+         $scope.SignDetailByDs = data;
+         console.log($scope.SignDetailByDs);
+         if($scope.SignDetailByDs.StartDate==null){
                $scope.StartDate=yyyy+'-'+mm+'-'+db;//yyyy+'-'+mm+'-'+dd;
              } 
              if($scope.SignDetailByDs.EndDate==null){
@@ -1891,26 +1890,74 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
             datePickerCallback(val);
           }
         };  
-         $scope.doRefresh = function() {
-
-         getlist();
-        }
-        var getlist = function()
-       {
-            VitalInfo.VitalSigns(UserId,StartDate,EndDate).then(function(data){
-            $scope.$broadcast('scroll.refreshComplete');
-            $scope.SignDetailByDs = data;
-            if((data !="")&&(data !=null)){
-                 $scope.show_recordList = false;   
-               } 
-               else{
-                $scope.show_recordList = true ;
-               } 
-
-          },function(e){
-            $scope.$broadcast('scroll.refreshComplete');
-          });
+       //   $scope.doRefresh = function() {
        
+       //   getlist();
+       //  }
+       //  var getlist = function()
+       // {
+       //      VitalInfo.VitalSigns(UserId,StartDate,EndDate).then(function(data){
+       //      $scope.$broadcast('scroll.refreshComplete');
+       //      $scope.SignDetailByDs = data;
+            
+       //        if((data !="")&&(data !=null)){
+       //           $scope.show_recordList = false;   
+       //         } 
+       //         else{
+       //          $scope.show_recordList = true ;
+       //         } 
+           
+            
+       //    },function(e){
+       //      $scope.$broadcast('scroll.refreshComplete');
+       //    })
+           // var l=$scope.SignDetailByDs.length;
+            
+       $scope.loadMore = function(){
+         
+         var l=$scope.SignDetailByDs.length;
+         console.log(l);
+           //if(l<=15){
+            $ionicLoading.show({
+            template: '<ion-spinner style="height:2em;width:2em"></ion-spinner>'
+            });
+
+              VitalInfo.VitalSigns(UserId,StartDate,EndDate).then(
+                    function(data) {  
+                     // if(data.NextStartDate==-1){$scope.status="已加载完毕"}
+                       if((data !="")&&(data !=null)){
+                       $scope.show_recordList = false;   
+                        } 
+                       else{
+                       $scope.show_recordList = true ;
+                        } 
+                        var t=data.length;
+                        console.log(t);
+                        var currentStart = 0;
+                        //while(currentStart<t)
+                        if((t-l)>=15)
+                        {
+                           //console.log(2);
+                           for (var i = 0; i < 15; i++) {
+
+                                $scope.SignDetailByDs[i+l]=data[i+l];
+                             }
+                            console.log($scope.SignDetailByDs);
+                            //currentStart += 15;
+                         }else{
+                          $scope.SignDetailByDs=data;
+                         }
+                        $scope.$broadcast('scroll.refreshComplete');
+                        setTimeout(function(){$ionicLoading.hide();},500);
+                                    }, function(e) {  // 处理错误 .reject  
+                          console.log(e);
+                                                    }); 
+         // }
+          // else
+          // {
+          //     $scope.status="已加载完毕"
+          // }
+      
      }
       //监视进入页面
       $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded

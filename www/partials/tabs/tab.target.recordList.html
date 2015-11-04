@@ -7,7 +7,25 @@
 .header .col {
   background-color:lightgrey;
 }
+.header .col-10 {
+  background-color:lightgrey;
+  padding-bottom: 5px;padding-left: 5px;padding-right: 5px;padding-top: 5px;
+}
+.header .col-25 {
+  background-color:lightgrey;
+    padding-bottom: 5px;padding-left: 5px;padding-right: 5px;padding-top: 5px;
+}
 
+.col-10 {
+  border: solid 1px grey;
+  border-right-style: none;
+  padding-bottom: 5px;padding-left: 5px;padding-right: 5px;padding-top: 5px;
+}
+.col-25 {
+  border: solid 1px grey;
+  border-right-style: none;
+  padding-bottom: 5px;padding-left: 5px;padding-right: 5px;padding-top: 5px;
+}
 .col {
   border: solid 1px grey;
   border-right-style: none;
@@ -55,27 +73,31 @@
         </div>
      <br>
       <div class="row header" >
-          <div class="col">日期</div>
-          <div class="col">时间</div>
-          <div class="col">体征</div>
-          <div class="col">值</div>
-          <div class="col">单位</div>
+          <div class="col-25" style="text-align:center">日期</div>
+          <div class="col" style="text-align:center">时间</div>
+          <div class="col-25" style="text-align:center">体征</div>
+          <div class="col-10" style="text-align:center">值</div>
+          <div class="col" style="text-align:center">单位</div>
         </div>
-        <div class="row" ng-repeat="Sign in SignDetailByDs">
-          <div class="col">{{Sign.RecordDate}}</div>
-          <div class="col">{{Sign.RecordTime}}</div>
-          <div class="col"> {{Sign.Name}}</div>
-          <div class="col">{{Sign.Value}}</div>
-          <div class="col">{{Sign.Unit}}</div>
+        <div class="row" ng-repeat="Sign in SignDetailByDs|orderBy :'-RecordDate' ">
+          <div class="col-25" style="text-align:center">{{Sign.RecordDate}}</div>
+          <div class="col" style="text-align:center">{{Sign.RecordTime}}</div>
+          <div class="col-25" style="text-align:center"> {{Sign.Name}}</div>
+          <div class="col-10" style="text-align:center">{{Sign.Value}}</div>
+          <div class="col" style="text-align:center">{{Sign.Unit}}</div>
         </div>
-     <div ng-if=show_recordList >
+        <button class="button button-calm button-full" ng-click=loadMore()>
+      {{status}}
+    </button>
+     <div ng-if="show_recordList" >
         <p style="color:#97CBFF;text-align:center;margin-top:20px;">此时间段没有数据！</p>
      </div>
-        <ion-refresher
+        <!-- <ion-refresher
             pulling-text="下拉刷新。。。"
             spinner='ripple'
             refreshing-text="努力加载中"
-            on-refresh="doRefresh()">
-        </ion-refresher>
+            on-refresh="doRefresh()  ">
+        </ion-refresher> -->
+      
   </ion-content>
 </ion-view>
