@@ -1916,7 +1916,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
        $scope.loadMore = function(){
          
          var l=$scope.SignDetailByDs.length;
-         console.log(l);
+         //console.log(l);
            //if(l<=15){
             $ionicLoading.show({
             template: '<ion-spinner style="height:2em;width:2em"></ion-spinner>'
@@ -1946,6 +1946,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
                             //currentStart += 15;
                          }else{
                           $scope.SignDetailByDs=data;
+                          $scope.status="已加载完毕";
                          }
                         $scope.$broadcast('scroll.refreshComplete');
                         setTimeout(function(){$ionicLoading.hide();},500);
